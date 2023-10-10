@@ -1,0 +1,28 @@
+Shop
+ ==>users
+     =>roles
+       ==>permissions
+ ==>items
+
+ ==>customers
+
+ ==>vendors
+
+ ==>banks
+
+ =========================
+ sales/purchases
+  =>quote
+  =>order
+  =>pick
+  =>shipment
+  =>invoice
+
+ inventory mgt
+  =>costing
+  =>stock
+
+  
+
+
+     
