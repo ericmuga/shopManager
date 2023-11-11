@@ -124,7 +124,7 @@ const showUpdateModal=(posting_group)=>{
 
 
 
-                                             <SearchBox model="itemPostingGroups.index" />
+                                             <SearchBox :model="route('itemPostingGroups.index')" />
                                     </template>
                                         </Toolbar>
 

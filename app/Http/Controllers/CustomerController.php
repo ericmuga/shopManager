@@ -21,7 +21,7 @@ class CustomerController extends Controller
 
 
             $searchParameter = $request->has('search')?$request->search:'';
-            $searchColumns = ['customer_name', 'phone_no','email'];
+            $searchColumns = ['customer_name', 'phone_number','email'];
             $strictColumns = [];
             $relatedModels = [
                                 'relatedModel1' => ['related_column1', 'related_column2'],

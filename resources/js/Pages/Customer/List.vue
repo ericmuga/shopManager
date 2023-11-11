@@ -144,7 +144,7 @@ const showUpdateModal=(customer)=>{
 
 
 
-                                             <SearchBox model="customers.index" />
+                                             <SearchBox :model="route('customers.index')" />
                                     </template>
                                         </Toolbar>
 
