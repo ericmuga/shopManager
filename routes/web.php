@@ -5,7 +5,6 @@ use App\Http\Controllers\{CustomerController,
                             DetailedItemEntryController,
                             InvoiceController,
                             InvoiceLineController,
-                            ItemController,
                             ItemEntryController,
                             ItemPostingGroupController,
                             OrderController,
@@ -15,6 +14,7 @@ use App\Http\Controllers\{CustomerController,
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ItemController;
 
 /*
 |--------------------------------------------------------------------------
