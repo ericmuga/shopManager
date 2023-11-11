@@ -5,11 +5,10 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import Tailwind from "primevue/passthrough/tailwind";
 
 import PrimeVue from 'primevue/config';
-
-//theme
-import "primevue/resources/themes/lara-light-indigo/theme.css";
+import 'primevue/resources/themes/lara-light-indigo/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import MultiSelect from 'primevue/multiselect';
@@ -28,7 +27,7 @@ import Swal from 'sweetalert2';
 import SearchBox from '@/Components/SearchBox.vue'
 import Drop from '@/Components/Drop.vue'
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'shopManager';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -36,7 +35,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(PrimeVue)
+            .use(PrimeVue,{pt: Tailwind})
             .use(ZiggyVue, Ziggy)
             .component('ToolBar',Toolbar)
             .component('Checkbox',Checkbox)
@@ -57,3 +56,4 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
+

@@ -3,10 +3,10 @@ import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+// import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-
+// import Button from 'primevue/button';
 defineProps({
     canResetPassword: {
         type: Boolean,
@@ -85,9 +85,16 @@ const submit = () => {
                     Forgot your password?
                 </Link>
 
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
+                <Button class="ml-4 bg-cyan-800" 
+                       :class="{ 'opacity-25': form.processing }" 
+                       :disabled="form.processing" 
+                       
+                       type="submit"
+                       label="Log in"
+                       />
+
+                
+                
             </div>
         </form>
     </GuestLayout>
