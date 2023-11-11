@@ -1,6 +1,17 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\{CustomerController,
+                            CustomerEntryController,
+                            DetailedItemEntryController,
+                            InvoiceController,
+                            InvoiceLineController,
+                            ItemController,
+                            ItemEntryController,
+                            ItemPostingGroupController,
+                            OrderController,
+                            OrderLineController,
+                            ProfileController};
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,6 +46,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('customers', CustomerController::class);
+    Route::resource('customerEntries',CustomerEntryController::class);
+    Route::resource('detailedCustomerEntries',DetailedItemEntryController::class);
+
+    Route::resource('items', ItemController::class);
+    Route::resource('itemEntries',ItemEntryController::class);
+    Route::resource('itemPostingGroups',ItemPostingGroupController::class);
+    Route::resource('detailedItemEntries',DetailedItemEntryController::class);
+
+    Route::resource('orders',OrderController::class);
+    Route::resource('orderLines',OrderLineController::class);
+
+
+    Route::resource('invoices',InvoiceController::class);
+    Route::resource('invoiceLines',InvoiceLineController::class);
+
+
 });
 
 require __DIR__.'/auth.php';
