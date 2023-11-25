@@ -62,6 +62,11 @@ window.addEventListener('resize', () => {
         <!-- Add content for the Customers card -->
       </div>
 
+      <div ref="customerCard" class="mb-4 card" @click="router.get(route('customers.index'))">
+        <h3 class="mb-2 text-xl font-semibold">Vendors</h3>
+        <!-- Add content for the Customers card -->
+      </div>
+
       <!-- Sales Card -->
       <div ref="salesCard" class="mb-4 card">
         <h3 class="mb-2 text-xl font-semibold">Sales</h3>

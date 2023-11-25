@@ -11,8 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('master_tables', function (Blueprint $table) {
-            //
+        Schema::table('items', function (Blueprint $table) {
+
+         $table->unsignedBigInteger('tax_group_id')->index();
+
+        });
+
+
+        Schema::table('customers', function (Blueprint $table) {
+
+         $table->unsignedBigInteger('tax_posting_group_id')->index();
+         $table->unsignedBigInteger('bus_posting_group_id')->index();
+
+        });
+         Schema::table('vendors', function (Blueprint $table) {
+
+         $table->unsignedBigInteger('tax_posting_group_id')->index();
+         $table->unsignedBigInteger('bus_posting_group_id')->index();
+
         });
     }
 
@@ -21,8 +37,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('master_tables', function (Blueprint $table) {
-            //
-        });
+
+
     }
 };

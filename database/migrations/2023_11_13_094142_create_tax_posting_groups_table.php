@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('tax_posting_groups', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->string('description');
+            $table->string('type');
             $table->timestamps();
         });
     }

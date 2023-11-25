@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoice_lines', function (Blueprint $table) {
+        Schema::create('inventory_adjustments', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoice_lines');
+        Schema::dropIfExists('inventory_adjustments');
     }
 };

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{CustomerController,
+use App\Http\Controllers\{BusPostingGroupController, CustomerController,
                             CustomerEntryController,
                             DetailedItemEntryController,
                             InvoiceController,
@@ -9,7 +9,7 @@ use App\Http\Controllers\{CustomerController,
                             ItemPostingGroupController,
                             OrderController,
                             OrderLineController,
-                            ProfileController};
+                            ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController};
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -59,8 +59,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('itemPostingGroups',ItemPostingGroupController::class);
     Route::resource('detailedItemEntries',DetailedItemEntryController::class);
 
-    Route::resource('orders',OrderController::class);
-    Route::resource('orderLines',OrderLineController::class);
+
+    Route::resource('taxPostingGroups',TaxPostingGroupController::class);
+    Route::resource('busPostingGroups',BusPostingGroupController::class);
+
+
+    // Route::resource('orders',OrderController::class);
+    // Route::resource('orderLines',OrderLineController::class);
+
+    Route::resource('salesOrder', SalesOrderController::class);
+    Route::resource('purchaseOrder',PurchaseOrderController::class);
+
+
 
 
     Route::resource('invoices',InvoiceController::class);

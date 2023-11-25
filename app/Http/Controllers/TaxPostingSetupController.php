@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class OrderLineController extends Controller
+class TaxPostingSetupController extends Controller
 {
     /**
      * Display a listing of the resource.
