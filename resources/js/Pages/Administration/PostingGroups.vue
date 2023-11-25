@@ -6,26 +6,23 @@ import { router } from '@inertiajs/vue3'
 
 import { ref, onMounted, computed } from 'vue';
 import gsap from 'gsap';
-import { usePage } from '@inertiajs/vue3';
 
-const page = usePage();
-
-const customerCard = ref(null);
-const salesCard = ref(null);
-const financialsCard = ref(null);
+const itemPostingGroupCard = ref(null);
+const userCard = ref(null);
+const postingCard = ref(null);
 const administrationCard = ref(null);
-
-const navigateTo = (component) => {
-  router.visit(route(component));
-};
 
 const isMobile = computed(() => {
   return window.innerWidth <= 640; // Adjust the breakpoint as needed
 });
 
+const navigateTo = (component) => {
+  router.visit(route(component));
+};
+
 onMounted(() => {
   // Use GSAP to fade in the cards on component mount
-  gsap.from([customerCard.value, salesCard.value, financialsCard.value, administrationCard.value], {
+  gsap.from([itemPostingGroupCard.value, userCard.value, postingCard.value], {
     opacity: 0,
     duration: 1,
     stagger: 0.2, // Stagger the animations for a more dynamic effect
@@ -39,7 +36,7 @@ window.addEventListener('resize', () => {
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Posting Groups" />
 
     <AuthenticatedLayout>
         <!-- <template #header>
@@ -50,35 +47,24 @@ window.addEventListener('resize', () => {
   <div class="mt-2 dashboard">
     <!-- Stats Bar at the Top -->
     <div class="p-4 text-white bg-blue-500 stats-bar">
-      <h2 class="text-2xl font-semibold">Dashboard</h2>
+      <h2 class="text-2xl font-semibold">Posting Groups</h2>
       <!-- Add any other stats or information you want to display here -->
     </div>
 
     <!-- Cards in the Middle -->
      <div :class="{'flex-col': isMobile, 'flex-row': !isMobile}" class="items-center mt-8">
       <!-- Customer Card -->
-      <div ref="customerCard" class="mb-4 card" @click="router.get(route('customers.index'))">
-        <h3 class="mb-2 text-xl font-semibold">Customers</h3>
+      <div ref="itemPostingGroupCard" class="mb-4 card" @click="router.get(route('itemPostingGroups.index'))">
+        <h3 class="mb-2 text-xl font-semibold">Items Posting Groups</h3>
         <!-- Add content for the Customers card -->
       </div>
 
-      <!-- Sales Card -->
-      <div ref="salesCard" class="mb-4 card">
-        <h3 class="mb-2 text-xl font-semibold">Sales</h3>
-        <!-- Add content for the Sales card -->
+      <div ref="itemPostingGroupCard" class="mb-4 card" @click="router.get(route('itemPostingGroups.index'))">
+        <h3 class="mb-2 text-xl font-semibold">Items Posting Groups</h3>
+        <!-- Add content for the Customers card -->
       </div>
 
-      <!-- Financials Card -->
-      <div ref="financialsCard"  class="mb-4 card">
-        <h3 class="mb-2 text-xl font-semibold">Financials</h3>
-        <!-- Add content for the Financials card -->
-      </div>
 
-      <!-- Administration Card -->
-      <div ref="administrationCard" class="mb-4 card" @click="navigateTo('administration.index')">
-        <h3 class="mb-2 text-xl font-semibold">Administration</h3>
-        <!-- Add content for the Administration card -->
-      </div>
     </div>
 
 

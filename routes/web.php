@@ -51,6 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('customerEntries',CustomerEntryController::class);
     Route::resource('detailedCustomerEntries',DetailedItemEntryController::class);
 
+    Route::get('administration',function(){return inertia('Administration/Index');})->name('administration.index');
+    Route::get('administration/posting-group',function(){return inertia('Administration/PostingGroups');})->name('administration.posting-groups');
+
     Route::resource('items', ItemController::class);
     Route::resource('itemEntries',ItemEntryController::class);
     Route::resource('itemPostingGroups',ItemPostingGroupController::class);
