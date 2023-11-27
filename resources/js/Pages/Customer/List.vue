@@ -26,7 +26,8 @@ const form= useForm({
     guardian_id_no:'',
    phone_number:'',
    address:'',
-   physical_address:''
+   physical_address:'',
+   tax_posting_group_id:'',
 })
 
 
@@ -59,6 +60,7 @@ let mode= { state: 'Create' };
 
 const props=  defineProps({
        customers:Object,
+       tax_pgs:Object,
     //    roles:Object,
     //    permissions:Object,
   })
@@ -314,31 +316,37 @@ const showUpdateModal=(customer)=>{
 
         />
 
+       <div class="flex flex-col items-center justify-center gap-3 p-1">
         <label>D.O.B.</label>
         <input type="date" v-model="form.dob"/>
-
-        <!-- <Password v-model="form.Password" :feedback="true" /> -->
-
-        <!-- <MultiSelect
-         v-model="form.roles"
-         :options="roles.data"
-         optionValue="name"
-         optionLabel="name"
-         placeholder="Role"
+        <Dropdown
+         v-model="form.tax_posting_group_id"
+         :options="tax_pgs"
+         optionValue="id"
+         optionLabel="code"
+         placeholder="Tax Posting Group"
          filter
 
-        /> -->
+        />
+       </div>
+        <!-- <Password v-model="form.Password" :feedback="true" /> -->
 
+
+     <div class="flex flex-row items-center justify-center gap-3 p-1 text-center ">
         <Button
-          severity="info"
+
           type="submit"
           :label=mode.state
           :disabled="form.processing"
+          icon="pi pi-send"
+          severity="success"
+          class="w-1/2"
 
         />
 
 
-        <Button label="Cancel" severity="warning" icon="pi pi-cancel" @click="showModal=false"/>
+        <Button label="Cancel" severity="warning" icon="pi pi-cancel" @click="showModal=false" class="w-1/2" />
+        </div>
 </div>
 
     </form>

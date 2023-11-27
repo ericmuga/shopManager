@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Customer;
 use App\Models\Item;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('item_entries', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Customer::class);
-            // $table->foreignIdFor(Item::class);
-            $table->foreignIdFor(User::class);
+            $table->string('entry_type');
             $table->date('posting_date');
-            $table->string('status');
+            $table->foreignIdFor(Item::class);
+            $table->string('document_no');
             $table->string('ext_doc_no');
+            $table->morphs('documentable');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('item_entries');
     }
 };

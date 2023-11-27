@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('tax_posting_setups', function (Blueprint $table) {
             $table->id();
+            $table->string('item_tax_group_id');
+            $table->string('bus_tax_group_id');
+            $table->string('tax_identifier')->unique();
+            // $table->unique(['item_posting_group_id','bus_posting_group_id'])->index();
             $table->timestamps();
         });
     }

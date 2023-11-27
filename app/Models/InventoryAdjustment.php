@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryAdjustment extends Model
 {
     use HasFactory;
+
+    public function ItemEntry()
+    {
+        return $this->morphTo(ItemEntry::class,'documentable');
+    }
+
 }

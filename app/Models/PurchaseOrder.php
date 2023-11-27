@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseOrder extends Model
 {
     use HasFactory;
+    public function purchaseOrderLines()
+    {
+        return $this->hasMany(PurchaseOrderLine::class)->orderBy('id');
+    }
+
+    public function vendor(){
+        return $this->belongsTo(Vendor::class);
+
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('description');
-            $table->string('type');
+            $table->string('type'); // customer, vendor, items
             $table->timestamps();
         });
     }

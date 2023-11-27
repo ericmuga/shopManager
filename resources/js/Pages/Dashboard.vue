@@ -68,7 +68,7 @@ window.addEventListener('resize', () => {
       </div>
 
       <!-- Sales Card -->
-      <div ref="salesCard" class="mb-4 card">
+      <div ref="salesCard" class="mb-4 card" @click="router.get(route('sales.dashboard'))">
         <h3 class="mb-2 text-xl font-semibold">Sales</h3>
         <!-- Add content for the Sales card -->
       </div>

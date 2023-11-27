@@ -27,6 +27,10 @@ return new class extends Migration
             //
             $table->boolean('blocked')->default(false)->nullable();
         });
+         Schema::table('items', function (Blueprint $table) {
+            //
+            $table->boolean('blocked')->default(false)->nullable();
+        });
     }
 
     /**

@@ -67,8 +67,14 @@ Route::middleware('auth')->group(function () {
     // Route::resource('orders',OrderController::class);
     // Route::resource('orderLines',OrderLineController::class);
 
+
+    ///////////////////////////Sales Routes//////////////////////////////////
+    Route::get('sales',fn()=>inertia('Sales/Dashboard'))->name('sales.dashboard')->breadcrumb('sales');
+
     Route::resource('salesOrder', SalesOrderController::class);
     Route::resource('purchaseOrder',PurchaseOrderController::class);
+
+
 
 
 

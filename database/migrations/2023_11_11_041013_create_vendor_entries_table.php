@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,8 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detailed_customer_entries', function (Blueprint $table) {
+        Schema::create('vendor_entries', function (Blueprint $table) {
             $table->id();
+            $table->morphs('documentable');
+            $table->date('posting_date');
+            $table->foreignIdFor(User::class);
+            $table->string('ext_doc_no');
+            $table->string('tax_uuid');
             $table->timestamps();
         });
     }
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detailed_customer_entries');
+        Schema::dropIfExists('vendor_entries');
     }
 };

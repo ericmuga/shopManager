@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('unit_cost');
             $table->string('unit_price');
             $table->string('posting_group');
-            $table->boolean('blocked');
+            // $table->boolean('blocked');
             $table->foreignIdFor(ItemPostingGroup::class);
             $table->timestamps();
         });

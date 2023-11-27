@@ -316,6 +316,16 @@ const showUpdateModal=(item)=>{
 
         />
 
+        <Dropdown
+            filter
+           placeholder="Tax Group"
+           v-model="form.posting_group_id"
+           :options="props.posting_groups.data"
+           optionValue="id"
+           optionLabel="code"
+
+        />
+
         <InputText
            hidden
            placeholder="id"

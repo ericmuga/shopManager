@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\SearchQueryService;
-use App\Models\{Customer};
+use App\Models\{Customer, TaxPostingGroup};
 use App\Http\Resources\{CustomerResource};
 class CustomerController extends Controller
 {
@@ -32,13 +32,12 @@ class CustomerController extends Controller
 
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], []);
 
-            $customers = CustomerResource::collection($searchService
-                            //   ->with(['confirmations']) // Example of eager loading related models
-                            ->search()->paginate($rows));
+            $customers = CustomerResource::collection($searchService->search()->paginate($rows));
+            $tax_pgs=TaxPostingGroup::select('id','code')->get();
 
 
 
-             return inertia('Customer/List',compact('customers'));
+             return inertia('Customer/List',compact('customers','tax_pgs'));
     }
 
     /**

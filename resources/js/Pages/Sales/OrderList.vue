@@ -15,7 +15,7 @@ import {watch, ref} from 'vue';
 const props=  defineProps({
     orders:Object,
     customers:Object,
-    posting_groups:Object,
+    items:Object,
   })
 
 const form= useForm({
@@ -83,11 +83,11 @@ const showUpdateModal=(order)=>{
 
 
 <template>
-    <Head title="Orders"/>
-
+    <Head title="Sales-Orders"/>
+n
     <AuthenticatedLayout @add="showModal=true">
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Orders</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">Sales Orders</h2>
         </template>
 
         <div class="py-6">
@@ -134,7 +134,7 @@ const showUpdateModal=(order)=>{
 
 
 
-                                             <SearchBox :model="route('orders.index')" />
+                                             <SearchBox :model="route('salesOrder.index')" />
                                     </template>
                                         </Toolbar>
 
@@ -206,7 +206,7 @@ const showUpdateModal=(order)=>{
 
                                                     <td>
                                                        <div class="flex flex-row">
-                                                          <Drop  :drop-route="route('orders.destroy',{'order':order.id})"/>
+                                                          <Drop  :drop-route="route('salesOrder.destroy',{'order':order.id})"/>
                                                             <Button
                                                                       icon="pi pi-pencil"
                                                                       severity="info"
@@ -249,75 +249,29 @@ const showUpdateModal=(order)=>{
 
      <div class="flex flex-col p-4 rounded-sm">
 
-        <div  class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> {{mode.state}} order</div>
+        <div  class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> {{mode.state}} Sales Order</div>
         <!-- <div v-else class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> Update order</div> -->
 
           <form  @submit.prevent="createOrUpdateorder()">
 
 <div class="flex flex-col justify-center gap-3">
+        <div class="flex flex-row items-center justify-center gap-2 p-1">
 
-        <label >Posting Date</label>
-        <input type="date" placeholder="Posting Pate" v-model="form.posting_date"/>
+         <input type="date" placeholder="Posting Pate" v-model="form.posting_date" class="p-1 rounded-md"/>
+        </div>
 
-        <Dropdown
-          v-model="form.customer_id"
-          :options="props.customers"
-        />
+        <div class="flex flex-row items-center justify-center gap-2 p-1">
+        <label >Customer</label>
+            <Dropdown
+            v-model="form.customer_id"
+            :options="props.customers"
+            optionValue="id"
+            optionLabel="name"
+            />
+        </div>
 
-        <InputText
 
-           placeholder="Sales UOM"
-           v-model="form.sales_uom"
 
-        />
-
-         <InputText
-
-           placeholder="base_uom"
-           v-model="form.base_uom"
-
-        />
-         <InputNumber
-
-           placeholder="Unit Cost"
-           v-model="form.unit_cost"
-
-        />
-         <InputNumber
-
-           placeholder="Unit Price"
-           v-model="form.unit_price"
-
-        />
-         <Dropdown
-            filter
-           placeholder="Posting Group"
-           v-model="form.posting_group_id"
-           :options="props.posting_groups.data"
-           optionValue="id"
-           optionLabel="code"
-
-        />
-
-        <Dropdown
-            filter
-           placeholder="Tax Group"
-           v-model="form.posting_group_id"
-           :options="props.posting_groups.data"
-           optionValue="id"
-           optionLabel="code"
-
-        />
-
-        <InputText
-           hidden
-           placeholder="id"
-           v-model="form.id"
-
-        />
-
-        <label>Blocked?</label>
-        <input type="checkbox" v-model="form.blocked" />
 
         <Button
           severity="info"

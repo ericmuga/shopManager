@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string('customer_name');
             $table->string('id_no');
             $table->string('email')->nullable();
-            $table->date('dob');
+            $table->date('dob')->nullable();
             $table->string('guardian_id_no')->nullable();
             $table->string('phone_number');
             $table->string('address')->nullable();
             $table->string('physical_address')->nullable();
+            $table->string('PIN')->nullable();
             $table->timestamps();
         });
     }

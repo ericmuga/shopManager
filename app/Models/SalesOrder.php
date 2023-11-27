@@ -9,9 +9,21 @@ class SalesOrder extends Model
 {
     use HasFactory;
 
+    protected $table='sales_orders';
+
     public function salesOrderLines()
     {
         return $this->hasMany(SalesOrderLine::class)->orderBy('id');
+    }
+
+    public function customer(){
+        return $this->belongsTo(Customer::class);
+
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

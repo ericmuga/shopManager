@@ -2,21 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Customer,SalesOrder};
+use App\Models\{Customer,SalesOrder,Item};
 use Illuminate\Http\Request;
-
+use App\Services\SearchQueryService;
+use App\Http\Resources\SalesOrderResource;
 class SalesOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $order=SalesOrder::withSum('salesOrderLines','amount')->get();
-        $customers=Customer::select('name','id')->get();
 
-        return inertia('SalesOrder/List',compact('orders','customers'));
+        $queryBuilder = SalesOrder::query();
+            $rows=$request->rows?:10;
+
+
+            $searchParameter = $request->has('search')?$request->search:'';
+            $searchColumns = ['document_no', 'ext_doc_no'];
+            $strictColumns = [];
+            $relatedModels = [
+                                'customer' => ['customer_name', 'phone_no'],
+
+                              ];
+
+
+
+            $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], $relatedModels);
+
+            $orders = SalesOrderResource::collection($searchService
+                              ->withSum(['salesOrderLines'=>'amount'])
+                            ->search()->paginate($rows));
+
+        $customers=Customer::select('customer_name','id')->get();
+        $items=Item::select('id','code','description')->get();
+
+        return inertia('Sales/OrderList',compact('orders','customers'));
     }
 
     /**
