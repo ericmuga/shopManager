@@ -35,8 +35,8 @@ class SalesOrderController extends Controller
                               ->withSum(['salesOrderLines'=>'amount'])
                             ->search()->paginate($rows));
 
-        $customers=Customer::select('customer_name','id')->get();
-        $items=Item::select('id','code','description')->get();
+        $customers=Customer::select('customer_name','id','bus_posting_group','tax_posting_group')->whereNot('blocked')->get();
+        $items=Item::select('id','code','description','tax_group_id','item_posting_group')->whereNot('blocked')->get();
 
         return inertia('Sales/OrderList',compact('orders','customers'));
     }
