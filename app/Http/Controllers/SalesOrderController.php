@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ItemResource;
-use App\Models\{Customer,SalesOrder,Item,NoSeries,CompanySetup};
+use App\Models\{Customer,SalesOrder,Item,NoSeries,CompanySetup, SalesOrderLine, TaxPostingGroup,ItemPostingGroup,BusPostingGroup};
 use Illuminate\Http\Request;
 use App\Services\{SearchQueryService,MyServices};
 use App\Http\Resources\SalesOrderResource;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 
 class SalesOrderController extends Controller
@@ -35,7 +36,7 @@ public function convertImageToDataURL()
             $searchColumns = ['document_no', 'ext_doc_no'];
             $strictColumns = [];
             $relatedModels = [
-                                'customer' => ['customer_name', 'phone_no'],
+                                'customer' => ['customer_name', 'phone_number','email'],
 
                               ];
 
@@ -44,7 +45,8 @@ public function convertImageToDataURL()
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], $relatedModels);
 
             $orders = SalesOrderResource::collection($searchService
-                              ->withSum(['salesOrderLines'=>'amount'])
+                            //   ->withSum(['salesOrderLines'=>'amount'])
+                              ->with(['customer'])
                             ->search()->paginate($rows));
 
         $customers=Customer::select('customer_name','id','bus_posting_group_id','tax_posting_group_id')->whereNot('blocked')->get();
@@ -70,8 +72,53 @@ public function convertImageToDataURL()
      */
     public function store(Request $request)
     {
-        //
-        dd($request->all());
+
+
+
+           $serial=NoSeries::first();
+           $serial->last_no_used=$request->document_no;
+           $serial->save();
+
+          $order= SalesOrder::create([
+            'customer_id'=>$request->customer_id,
+            'document_no'=>$request->document_no,
+            'posting_date'=>Carbon::parse($request->posting_date)->toDateString(),
+            'user_id'=>$request->user()->id,
+            'status'=>'posted',
+            'ext_doc_no'=>'',
+            'tax_uuid'=>'',
+
+           ]);
+
+
+
+
+        foreach($request->orderLines as $line)
+        {
+            $item=Item::firstWhere('code',$line['itemName']);
+            $customer = Customer::find($request->customer_id);
+            SalesOrderLine::create([
+                'item_id'=>$item->id,
+                'unit_price'=>$line['price'],
+                'document_no'=>$order->document_no,
+                'ext_doc_no'=>$order->ext_doc_no,
+                'quantity'=>$line['quantity'],
+                'uom'=>$item->sales_uom,
+                'item_tax_group'=>TaxPostingGroup::find($item->tax_group_id)->code,
+                'item_posting_group'=>ItemPostingGroup::find($item->item_posting_group_id)->code,
+                'customer_posting_group'=>BusPostingGroup::find($customer->bus_posting_group_id)->code,
+                'customer_tax_group'=>1,
+                'vat_percent'=>0.16,
+                'amount'=>$line['quantity']*$line['price'],
+                'amount_inc_vat'=>$line['quantity']*$line['price']*1.16,
+                'sales_order_id'=>$order->id,
+
+            ]);
+        }
+
+        //create item lines
+
+
     }
 
     /**

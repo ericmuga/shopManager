@@ -11,6 +11,7 @@ class SalesOrder extends Model
 
     protected $table='sales_orders';
 
+    protected $guarded=['id'];
     public function salesOrderLines()
     {
         return $this->hasMany(SalesOrderLine::class)->orderBy('id');
