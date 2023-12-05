@@ -9,6 +9,7 @@ class Item extends Model
 {
     use HasFactory;
    protected $guarded=['id'];
+
    public function posting_group()
    {
     return $this->belongsTo(ItemPostingGroup::class);

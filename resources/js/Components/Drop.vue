@@ -1,7 +1,9 @@
 <template>
     <div>
-         <Button icon="pi pi-times" class="justify-end p-button-danger"
+         <Button icon="pi pi-times"
+                 class="justify-end p-button-danger"
              text rounded
+             severity="danger"
                                     @click="drop(dropRoute)"
                             />
 
@@ -25,14 +27,14 @@ const drop=()=>Swal.fire({
                                         confirmButtonText: 'Yes, delete it!'
                                         }).then((result) => {
                                             if (result.isConfirmed) {
-                                                                            router.delete(props.dropRoute)
-                                                                                    // .onSuccess(
-                                                                                    //                 Swal.fire(
-                                                                                    //                 'Deleted!',
-                                                                                    //                 'Item has been deleted.',
-                                                                                    //                 'success'
-                                                                                    //         ))
-                                                            }
+                                                                        router.delete(props.dropRoute)
+                                                                                // .onSuccess(
+                                                                                //                 Swal.fire(
+                                                                                //                 'Deleted!',
+                                                                                //                 'Item has been deleted.',
+                                                                                //                 'success'
+                                                                                //         ))
+                                                                       }
                         })
 
 

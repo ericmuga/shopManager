@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('sales_uom');
             $table->string('unit_cost');
             $table->string('unit_price');
-            $table->string('posting_group');
-            // $table->boolean('blocked');
+            // $table->foreignIdFor(ItemPostingGroup::class);
             $table->foreignIdFor(ItemPostingGroup::class);
             $table->timestamps();
         });

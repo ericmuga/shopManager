@@ -16,5 +16,10 @@ class Customer extends Model
         return $this->whereNot('blocked');
     }
 
+    public function posting_group()
+    {
+        return $this->belongsTo(BusPostingGroup::class);
+    }
+
 
 }

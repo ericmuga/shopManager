@@ -2,8 +2,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Item, ItemPostingGroup};
-use App\Http\Resources\{ItemPostingGroupResource, ItemResource};
+use App\Models\{Item, ItemPostingGroup, TaxPostingGroup};
+use App\Http\Resources\{ItemPostingGroupResource, ItemResource, TaxPostingGroupResource};
 use App\Services\SearchQueryService;
 
 class ItemController extends Controller
@@ -30,13 +30,16 @@ class ItemController extends Controller
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], []);
 
             $items = ItemResource::collection($searchService
-                            //   ->with(['confirmations']) // Example of eager loading related models
-                            ->search()->paginate($rows));
+                                            ->with(['posting_group.code']) // Example of eager loading related models
+                                            ->search()->paginate($rows));
+
+
             $posting_groups=ItemPostingGroupResource::collection(ItemPostingGroup::orderBy('code')->get());
 
+            $tax_groups=TaxPostingGroupResource::collection(TaxPostingGroup::where('type','item')->select('id','code')->get());
 
             // dd($posting_groups);
-             return inertia('Item/List',compact('items','posting_groups'));
+             return inertia('Item/List',compact('items','posting_groups','tax_groups'));
     }
 
     /**

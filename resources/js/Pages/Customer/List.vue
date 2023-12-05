@@ -28,6 +28,7 @@ const form= useForm({
    address:'',
    physical_address:'',
    tax_posting_group_id:'',
+   bus_posting_group_id:'',
 })
 
 
@@ -61,6 +62,7 @@ let mode= { state: 'Create' };
 const props=  defineProps({
        customers:Object,
        tax_pgs:Object,
+       bus_pgs:Object,
     //    roles:Object,
     //    permissions:Object,
   })
@@ -87,6 +89,9 @@ const showUpdateModal=(customer)=>{
     form.physical_address=customer.physical_address
     form.guardian_id_no=customer.guardian_id_no
     form.dob=customer.dob
+    form.tax_posting_group_id=customer.tax_posting_group_id
+    form.bus_posting_group_id=customer.bus_posting_group_id
+
 
 
     showModal.value=true
@@ -321,10 +326,19 @@ const showUpdateModal=(customer)=>{
         <input type="date" v-model="form.dob"/>
         <Dropdown
          v-model="form.tax_posting_group_id"
-         :options="tax_pgs"
+         :options="props.tax_pgs"
          optionValue="id"
          optionLabel="code"
          placeholder="Tax Posting Group"
+         filter
+
+        />
+         <Dropdown
+         v-model="form.bus_posting_group_id"
+         :options="props.bus_pgs"
+         optionValue="id"
+         optionLabel="code"
+         placeholder="Bus Posting Group"
          filter
 
         />

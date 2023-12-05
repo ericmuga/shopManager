@@ -59,12 +59,12 @@ window.addEventListener('resize', () => {
         <!-- Add content for the Customers card -->
       </div>
 
-      <div ref="itemPostingGroupCard" class="mb-4 card" @click="router.get(route('itemPostingGroups.index'))">
+      <div ref="taxPostingGroupCard" class="mb-4 card" @click="router.get(route('taxPostingGroups.index'))">
         <h3 class="mb-2 text-xl font-semibold">Tax Posting Groups</h3>
         <!-- Add content for the Customers card -->
       </div>
 
-      <div ref="itemPostingGroupCard" class="mb-4 card" @click="router.get(route('itemPostingGroups.index'))">
+      <div ref="busPostingGroupCard" class="mb-4 card" @click="router.get(route('busPostingGroups.index'))">
         <h3 class="mb-2 text-xl font-semibold">Business Posting Groups</h3>
         <!-- Add content for the Customers card -->
       </div>

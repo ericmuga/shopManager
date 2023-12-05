@@ -14,6 +14,7 @@ import {watch, ref} from 'vue';
 const form= useForm({
    code:'',
    description:'',
+   type:'',
    id:null
 })
 
@@ -23,7 +24,7 @@ const form= useForm({
 
 const createOrUpdateposting_group=()=>{
     if (mode.state=='Create')
-          form.post(route('itemPostingGroups.store'),
+          form.post(route('taxPostingGroups.store'),
                     { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`posting_group ${mode.state}d Successfully!`,'','success');
@@ -31,7 +32,7 @@ const createOrUpdateposting_group=()=>{
                     }
                    )
         else
-     form.patch(route('itemPostingGroups.update',form.id),
+     form.patch(route('taxPostingGroups.update',form.id),
                 { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`posting_group ${mode.state}d Successfully!`,'','success');
@@ -47,7 +48,6 @@ let mode= { state: 'Create' };
 
 const props=  defineProps({
        posting_groups:Object,
-    //    tax_groups:Object,
   })
 
   let showModal=ref(false);
@@ -67,6 +67,7 @@ const showUpdateModal=(posting_group)=>{
     form.code=posting_group.code
     form.description=posting_group.description
     form.id=posting_group.id
+    form.type=posting_group.type
 
     showModal.value=true
 }
@@ -74,11 +75,11 @@ const showUpdateModal=(posting_group)=>{
 
 
 <template>
-    <Head title="Item Posting Groups"/>
+    <Head title="Tax Posting Groups"/>
 
     <AuthenticatedLayout @add="showModal=true">
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Item Posting Groups</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">Tax Posting Groups</h2>
         </template>
 
         <div class="py-6">
@@ -118,14 +119,14 @@ const showUpdateModal=(posting_group)=>{
                                     <template #end>
 
 
-                                        <!-- <a :href="route('itemPostingGroups.download')" class="">
+                                        <!-- <a :href="route('taxPostingGroups.download')" class="">
                                             <Button icon="pi pi-download" severity="primary" text raised rounded label="posting_groups"/>
                                         </a> -->
 
 
 
 
-                                             <SearchBox :model="route('itemPostingGroups.index')" />
+                                             <SearchBox :model="route('taxPostingGroups.index')" />
                                     </template>
                                         </Toolbar>
 
@@ -143,6 +144,9 @@ const showUpdateModal=(posting_group)=>{
                                                         </th>
                                                         <th scope="col" class="px-6 py-3 text-center">
                                                             Description
+                                                        </th>
+                                                         <th scope="col" class="px-6 py-3 text-center">
+                                                            Type
                                                         </th>
 
 
@@ -169,14 +173,12 @@ const showUpdateModal=(posting_group)=>{
 
                                                     <td>
                                                        <div class="flex flex-row">
-                                                          <Drop  :drop-route="route('itemPostingGroups.destroy',{'itemPostingGroup':posting_group.id})"/>
+                                                          <Drop  :drop-route="route('taxPostingGroups.destroy',{'taxPostingGroup':posting_group.id})"/>
                                                             <Button
                                                                       icon="pi pi-pencil"
                                                                       severity="info"
                                                                       text
-
-
-                                                                      @click="showUpdateModal(posting_group)"
+                                                                     @click="showUpdateModal(posting_group)"
                                                                       />
                                                        </div>
                                                     </td>
@@ -212,7 +214,7 @@ const showUpdateModal=(posting_group)=>{
 
      <div class="flex flex-col p-4 rounded-sm">
 
-        <div  class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> {{mode.state}} Item Posting Group</div>
+        <div  class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> {{mode.state}} Tax Posting Group</div>
         <!-- <div v-else class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> Update posting_group</div> -->
 
           <form  @submit.prevent="createOrUpdateposting_group()">
@@ -222,8 +224,7 @@ const showUpdateModal=(posting_group)=>{
 
         <InputText
            placeholder="Code"
-
-           v-model="form.code"
+          v-model="form.code"
         />
         <InputText
 
@@ -231,12 +232,17 @@ const showUpdateModal=(posting_group)=>{
            v-model="form.description"
 
         />
+
         <InputText
            hidden
            placeholder="id"
            v-model="form.id"
 
         />
+        <Dropdown
+                v-model="form.type"
+                :options="['Item','Business']"
+         />
 
 
         <Button
@@ -246,6 +252,8 @@ const showUpdateModal=(posting_group)=>{
           :disabled="form.processing"
 
         />
+
+
 
 
         <Button label="Cancel" severity="warning" icon="pi pi-cancel" @click="showModal=false"/>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\SearchQueryService;
-use App\Models\{Customer, TaxPostingGroup};
+use App\Models\{BusPostingGroup, Customer, TaxPostingGroup};
 use App\Http\Resources\{CustomerResource};
 class CustomerController extends Controller
 {
@@ -33,11 +33,12 @@ class CustomerController extends Controller
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], []);
 
             $customers = CustomerResource::collection($searchService->search()->paginate($rows));
-            $tax_pgs=TaxPostingGroup::select('id','code')->get();
+            $tax_pgs=TaxPostingGroup::select('id','code')->where('type','Business')->get();
+            $bus_pgs=BusPostingGroup::select('id','code')->where('type','Customer')->get();
 
 
 
-             return inertia('Customer/List',compact('customers','tax_pgs'));
+             return inertia('Customer/List',compact('customers','tax_pgs','bus_pgs'));
     }
 
     /**

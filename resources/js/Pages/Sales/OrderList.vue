@@ -9,7 +9,42 @@ import Pagination from '@/Components/Pagination.vue'
 import Swal from 'sweetalert2'
 import Modal from '@/Components/Modal.vue'
 import Drop from '@/Components/Drop.vue'
-import {watch, ref} from 'vue';
+import {watch, ref,computed} from 'vue';
+import { format } from 'date-fns';
+
+const removeOrderLine = (index) => {
+  orderLines.value.splice(index, 1);
+};
+
+const orderLines = ref([
+  {
+    itemName: '',
+    quantity: 0,
+    price: 0
+  }
+]);
+
+const addOrderLine = () => {
+  orderLines.value.push({
+    itemName: '',
+    quantity: 0,
+    price: 0
+  });
+};
+
+const addItem = (index) => {
+  // Add your logic here to handle the submission of the form data,
+  // for example, you can send the data to the server or perform
+  // any necessary operations.
+  console.log('Item added:', orderLines.value[index]);
+
+  // Optional: Clear the form fields after adding the item
+  orderLines.value[index] = {
+    itemName: '',
+    quantity: 0,
+    price: 0
+  };
+};
 
 
 const props=  defineProps({
@@ -19,11 +54,34 @@ const props=  defineProps({
   })
 
 const form= useForm({
-  posting_date:''
+  posting_date:new Date(),
+  customer_id:'',
+  orderLines:'',
 })
 
+const submit=()=>
+{
+    console.log(orderLines.value);
+  form.orderLines=orderLines.value
+  form.post(route('salesOrder.store'))
+}
 
 
+const updateUnitPrice = (index) => {
+    // alert(orderLines.value[index].itemName)
+  const selectedItem = props.items.find(item => item.code === orderLines.value[index].itemName);
+  if (selectedItem) {
+    orderLines.value[index].price = selectedItem.unit_price;
+  }
+};
+
+const lineAmount = (index) => {
+  return orderLines.value[index].quantity * orderLines.value[index].price;
+};
+
+const orderTotal = computed(() => {
+  return orderLines.value.reduce((total, line) => total + lineAmount(orderLines.value.indexOf(line)), 0);
+});
 
 
 const createOrUpdateorder=()=>{
@@ -257,25 +315,78 @@ n
 <div class="flex flex-col justify-center gap-3">
         <div class="flex flex-row items-center justify-center gap-2 p-1">
 
-         <input type="date" placeholder="Posting Pate" v-model="form.posting_date" class="p-1 rounded-md"/>
+          <Calendar v-model="form.posting_date" dateFormat="dd/mm/yy" />
         </div>
 
         <div class="flex flex-row items-center justify-center gap-2 p-1">
-        <label >Customer</label>
+
             <Dropdown
             v-model="form.customer_id"
             :options="props.customers"
             optionValue="id"
-            optionLabel="name"
+            optionLabel="customer_name"
+            placeholder="Select Customer"
             />
         </div>
 
 
 
 
+
+       <div>
+            <h2 class="text-center">Items</h2>
+            <div v-for="(orderLine, index) in orderLines" :key="index" >
+
+            <div class="flex flex-col items-center justify-between w-full space-x-3">
+                <p>
+            <form @submit.prevent="addItem(index)">
+                <div class="my-2">
+                 {{ index + 1 }}
+
+                <Dropdown
+                 v-model="orderLine.itemName"
+                 :options="props.items"
+                 option-label="code"
+                 option-value="code"
+                 style="width:100px;"
+                 filter
+                 @change="updateUnitPrice(index)"
+
+                />
+
+                <label for="quantity">Qty:</label>
+                <InputText v-model="orderLine.quantity" type="number" class="small" required style="width:100px;"/>
+
+                <label for="price">Price:</label>
+                <InputText v-model="orderLine.price" type="number" required style="width:100px;"/>
+
+                 <span>{{ lineAmount(index) }}</span>
+
+            <Button @click="addOrderLine" icon="pi pi-add" severity="success" label="+" />
+            <Button  @click="removeOrderLine(index)" severity="danger" label="-" :disabled="orderLines.length==1"/>
+                <!-- <button type="submit">Add Item</button> -->
+                </div>
+
+            </form>
+            </p>
+            </div>
+            </div>
+
+
+        </div>
+
+<div class="flex justify-end p-3 text-center rounded bg-slate-400 md">
+      <h3>Total Order Amount:</h3>
+      <span>{{ orderTotal }}</span>
+    </div>
+
+
+
+
+
         <Button
           severity="info"
-          type="submit"
+         @click="submit"
           :label=mode.state
           :disabled="form.processing"
 

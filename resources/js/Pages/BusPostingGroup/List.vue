@@ -11,45 +11,31 @@ import Modal from '@/Components/Modal.vue'
 import Drop from '@/Components/Drop.vue'
 import {watch, ref} from 'vue';
 
-
-const props=  defineProps({
-    items:Object,
-    posting_groups:Object,
-    tax_groups:Object,
-  })
-
 const form= useForm({
    code:'',
    description:'',
-   base_uom:'',
-   sales_uom:'',
-   unit_cost:'',
-   unit_price:'',
-   item_posting_group_id:'',
-   blocked:false,
-   id:null,
-   tax_group_id:'',
-   type:','
+   type:'',
+   id:null
 })
 
 
 
 
 
-const createOrUpdateitem=()=>{
+const createOrUpdateposting_group=()=>{
     if (mode.state=='Create')
-          form.post(route('items.store'),
+          form.post(route('busPostingGroups.store'),
                     { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
-                                      Swal.fire(`item ${mode.state}d Successfully!`,'','success');
+                                      Swal.fire(`posting_group ${mode.state}d Successfully!`,'','success');
                                     }
                     }
                    )
         else
-     form.patch(route('items.update',form.id),
+     form.patch(route('busPostingGroups.update',form.id),
                 { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
-                                      Swal.fire(`item ${mode.state}d Successfully!`,'','success');
+                                      Swal.fire(`posting_group ${mode.state}d Successfully!`,'','success');
                                     }
                     })
       showModal.value=false;
@@ -60,7 +46,9 @@ const createOrUpdateitem=()=>{
 
 let mode= { state: 'Create' };
 
-
+const props=  defineProps({
+       posting_groups:Object,
+  })
 
   let showModal=ref(false);
 
@@ -73,21 +61,13 @@ const showCreateModal=()=>{
 
 }
 
-const showUpdateModal=(item)=>{
+const showUpdateModal=(posting_group)=>{
 
     mode.state='Update'
-    form.code=item.code
-    form.description=item.description
-    form.id=item.id
-    form.posting_group_id=item.item_posting_group_id
-    form.base_uom=item.base_uom
-    form.sales_uom=item.sales_uom
-    form.blocked=item.blocked
-    form.unit_cost=item.unit_cost
-    form.unit_price=item.unit_price
-    form.tax_group_id=item.tax_group_id
-    form.type=item.type
-
+    form.code=posting_group.code
+    form.description=posting_group.description
+    form.id=posting_group.id
+    form.type=posting_group.type
 
     showModal.value=true
 }
@@ -95,11 +75,11 @@ const showUpdateModal=(item)=>{
 
 
 <template>
-    <Head title="Items"/>
+    <Head title="Bus Posting Groups"/>
 
     <AuthenticatedLayout @add="showModal=true">
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Items</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">Bus Posting Groups</h2>
         </template>
 
         <div class="py-6">
@@ -115,7 +95,7 @@ const showUpdateModal=(item)=>{
                                     <!-- <Button label="New" icon="pi pi-plus" class="mr-2" />
                                         <Button label="Upload" icon="pi pi-upload" class="p-button-success" /> -->
                                         <!-- <i class="mr-2 pi pi-bars p-toolbar-separator" /> -->
-                                        <!-- <SplitButton label="Save" icon="pi pi-check" :model="items" class="p-button-warning"></SplitButton> -->
+                                        <!-- <SplitButton label="Save" icon="pi pi-check" :model="posting_groups" class="p-button-warning"></SplitButton> -->
                                     <Button
                                          label="Add"
                                          icon="pi pi-plus"
@@ -127,7 +107,7 @@ const showUpdateModal=(item)=>{
                                 </template>
                                 <template #center>
                                     <div>
-                                        <Pagination :links="items.meta.links" />
+                                        <Pagination :links="posting_groups.meta.links" />
                                     </div>
                                     <!-- <Modal :show="showModal.value">
                                         <FilterPane :propsData="columnListing" />
@@ -139,14 +119,14 @@ const showUpdateModal=(item)=>{
                                     <template #end>
 
 
-                                        <!-- <a :href="route('items.download')" class="">
-                                            <Button icon="pi pi-download" severity="primary" text raised rounded label="items"/>
+                                        <!-- <a :href="route('busPostingGroups.download')" class="">
+                                            <Button icon="pi pi-download" severity="primary" text raised rounded label="posting_groups"/>
                                         </a> -->
 
 
 
 
-                                             <SearchBox :model="route('items.index')" />
+                                             <SearchBox :model="route('busPostingGroups.index')" />
                                     </template>
                                         </Toolbar>
 
@@ -162,26 +142,11 @@ const showUpdateModal=(item)=>{
                                                         <th scope="col" class="px-6 py-3">
                                                            Code
                                                         </th>
-                                                        <th scope="col" class="px-6 py-3">
-                                                           Description
-                                                        </th>
                                                         <th scope="col" class="px-6 py-3 text-center">
-                                                            Unit Cost
+                                                            Description
                                                         </th>
                                                          <th scope="col" class="px-6 py-3 text-center">
-                                                            Unit Price
-                                                        </th>
-                                                         <th scope="col" class="px-6 py-3 text-center">
-                                                           Posting Group
-                                                        </th>
-                                                         <th scope="col" class="px-6 py-3 text-center">
-                                                           Sales UOM
-                                                        </th>
-                                                         <th scope="col" class="px-6 py-3 text-center">
-                                                            Base UOM
-                                                        </th>
-                                                         <th scope="col" class="px-6 py-3 text-center">
-                                                          Blocked
+                                                            Type
                                                         </th>
 
 
@@ -194,47 +159,29 @@ const showUpdateModal=(item)=>{
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="item in items.data" :key="item.id"
+                                                    <tr v-for="posting_group in posting_groups.data" :key="posting_group.id"
                                                     class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
 
                                                     <td class="px-3 py-2 text-xs">
-                                                        {{ item.code }}
+                                                        {{ posting_group.code }}
                                                     </td>
 
                                                     <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.description }}
-                                                    </td>
-                                                    <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.unit_cost}}
+                                                        {{ posting_group.description }}
                                                     </td>
                                                      <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.unit_price}}
+                                                        {{ posting_group.type }}
                                                     </td>
-                                                    <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.posting_group }}
-                                                    </td>
-                                                    <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.sales_uom }}
-                                                    </td>
-                                                    <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.base_uom }}
-                                                    </td>
-                                                    <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.blocked }}
-                                                    </td>
-
 
 
                                                     <td>
                                                        <div class="flex flex-row">
-                                                          <Drop  :drop-route="route('items.destroy',{'item':item.id})"/>
+                                                          <Drop  :drop-route="route('busPostingGroups.destroy',{'busPostingGroup':posting_group.id})"/>
                                                             <Button
                                                                       icon="pi pi-pencil"
                                                                       severity="info"
                                                                       text
-
-
-                                                                      @click="showUpdateModal(item)"
+                                                                     @click="showUpdateModal(posting_group)"
                                                                       />
                                                        </div>
                                                     </td>
@@ -248,7 +195,7 @@ const showUpdateModal=(item)=>{
                     <Toolbar>
                         <template #center>
                             <div >
-                                <Pagination :links="items.meta.links" />
+                                <Pagination :links="posting_groups.meta.links" />
                             </div>
                         </template>
                     </Toolbar>
@@ -270,66 +217,22 @@ const showUpdateModal=(item)=>{
 
      <div class="flex flex-col p-4 rounded-sm">
 
-        <div  class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> {{mode.state}} Item</div>
-        <!-- <div v-else class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> Update item</div> -->
+        <div  class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> {{mode.state}} Bus Posting Group</div>
+        <!-- <div v-else class="w-full p-2 mb-2 tracking-wide text-center text-white rounded-sm bg-slate-500"> Update posting_group</div> -->
 
-          <form  @submit.prevent="createOrUpdateitem()">
+          <form  @submit.prevent="createOrUpdateposting_group()">
 
-<div class="grid grid-cols-2 gap-3">
-
-
-       <span class="mt-4 p-float-label">
-            <InputText id="code" v-model="form.code" />
-            <label for="code">Code</label>
-        </span>
-       <span class="mt-4 p-float-label">
-            <InputText id="description" v-model="form.description" />
-            <label for="description">Description</label>
-        </span>
-
-       <span class="mt-4 p-float-label">
-            <InputText id="sales_uom" v-model="form.sales_uom" />
-            <label for="sales_uom">Sales Unit of measure</label>
-        </span>
-
-         <span class="mt-4 p-float-label">
-            <InputText id="base_uom" v-model="form.base_uom" />
-            <label for="base_uom">Base Unit of measure</label>
-        </span>
-         <span class="mt-4 p-float-label">
-            <InputText id="unit_cost" v-model="form.unit_cost" />
-            <label for="unit_cost">Unit Cost</label>
-        </span>
-         <span class="mt-4 p-float-label">
-            <InputText id="unit_price" v-model="form.unit_price" />
-            <label for="unit_price">Unit Price</label>
-        </span>
-
-        <Dropdown
-            filter
-           placeholder="Type"
-           v-model="form.type"
-           :options="['Inventory','Service']"
+<div class="flex flex-col justify-center gap-3">
 
 
+        <InputText
+           placeholder="Code"
+          v-model="form.code"
         />
-         <Dropdown
-            filter
-           placeholder="Posting Group"
-           v-model="form.item_posting_group_id"
-           :options="props.posting_groups.data"
-           optionValue="id"
-           optionLabel="code"
+        <InputText
 
-        />
-
-        <Dropdown
-            filter
-           placeholder="Tax Group"
-           v-model="form.tax_group_id"
-           :options="props.tax_groups.data"
-           optionValue="id"
-           optionLabel="code"
+           placeholder="Description"
+           v-model="form.description"
 
         />
 
@@ -339,10 +242,10 @@ const showUpdateModal=(item)=>{
            v-model="form.id"
 
         />
-       <div class="space-x-3">
-              <label>Blocked?</label>
-        <input type="checkbox" v-model="form.blocked" />
-        </div>
+        <Dropdown
+                v-model="form.type"
+                :options="['Vendor','Customer','Account']"
+         />
 
 
         <Button
@@ -352,6 +255,8 @@ const showUpdateModal=(item)=>{
           :disabled="form.processing"
 
         />
+
+
 
 
         <Button label="Cancel" severity="warning" icon="pi pi-cancel" @click="showModal=false"/>
