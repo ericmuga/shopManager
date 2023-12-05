@@ -2,16 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Customer,SalesOrder,Item};
+use App\Http\Resources\ItemResource;
+use App\Models\{Customer,SalesOrder,Item,NoSeries,CompanySetup};
 use Illuminate\Http\Request;
-use App\Services\SearchQueryService;
+use App\Services\{SearchQueryService,MyServices};
 use App\Http\Resources\SalesOrderResource;
+use Illuminate\Support\Facades\File;
+
 class SalesOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+public function convertImageToDataURL()
+    {
+        $imagePath = public_path('img/logo.jpg');
+        $imageData = base64_encode(File::get($imagePath));
+        $dataUrl = 'data:image/jpeg;base64,' . $imageData;
+
+        return response()->json(['dataUrl' => $dataUrl]);
+    }
+
+     public function index(Request $request)
     {
         //
 
@@ -36,9 +48,13 @@ class SalesOrderController extends Controller
                             ->search()->paginate($rows));
 
         $customers=Customer::select('customer_name','id','bus_posting_group_id','tax_posting_group_id')->whereNot('blocked')->get();
-        $items=Item::select('id','code','description','tax_group_id','item_posting_group_id','unit_price')->whereNot('blocked')->get();
+        $items=ItemResource::collection(Item::whereNot('blocked')->get());
+        $companyInfo=CompanySetup::first();
 
-        return inertia('Sales/OrderList',compact('orders','customers','items'));
+        $lastSerialNo=MyServices::incrementSerialNumber(NoSeries::first()->last_no_used);
+
+
+        return inertia('Sales/OrderList',compact('orders','customers','items','lastSerialNo','companyInfo'));
     }
 
     /**

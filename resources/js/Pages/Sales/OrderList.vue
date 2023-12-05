@@ -11,18 +11,139 @@ import Modal from '@/Components/Modal.vue'
 import Drop from '@/Components/Drop.vue'
 import {watch, ref,computed} from 'vue';
 import { format } from 'date-fns';
+import axios from 'axios';
+import moment from 'moment';
+// import logo from '@/assets/logo.jpg';
+
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+
+;
+const currentDate = moment().format('DD/MM/YYYY'); // Format the current date
+
+const generatePDF = async ()=> {
+  const lineItems = orderLines.value;
+  try {
+    const response = await axios.get(route('convertLogo'));
+    const logo = response.data.dataUrl;
+
+
+
+  const tableBody = lineItems.map(item => [item.itemName+'-'+item.description, item.quantity, `Ksh.${item.price}`, `Ksh.${formatNumber(item.quantity * item.price)}`]);
+ const totalRow = ['', '', 'Total Amount', ` Ksh.${formatNumber(calculateTotal(lineItems))}`];
+ const vatAmountRow = ['', '', 'VAT Amount', `Ksh.${formatNumber(calculateVATAmount(lineItems))}`];
+  const docDefinition = {
+    content: [
+
+    {
+        columns: [
+            {},
+          // Logo
+          {
+            image: logo,
+            width: 100,
+            alignment: 'center',
+          },
+          // Company Info
+          {
+            width: '*',
+            text: [
+              { text: `Email: ${props.companyInfo.email}\n`, alignment: 'right' },
+              { text: `Phone: ${props.companyInfo.phone}\n`, alignment: 'right' },
+              { text: `PIN: ${props.companyInfo.pin}`, alignment: 'right' },
+            ],
+          },
+        ],
+      },
+      {
+        text: 'Batian Optical Centre',
+        style: 'header',
+        alignment: 'center',
+      },
+       {
+        text: `Date: ${currentDate}`,
+        style: 'subheader',
+        alignment: 'right',
+        margin: [0, 10, 0, 0], // Adjust the margin as needed
+      },
+      {
+        text: form.posting_date,
+        style: 'header',
+        alignment: 'right',
+      },
+
+      {
+        text: 'Sales Invoice',
+        style: 'header',
+        alignment: 'center',
+      },
+      {
+        // Display line items in a table
+        table: {
+          headerRows: 1,
+          widths: ['*', 'auto', 'auto', 'auto'], // Adjust column widths as needed
+          body: [
+            ['Item Name', 'Quantity', 'Unit Price', 'Total Amount'],
+            ...tableBody,
+            vatAmountRow, // Add a row for VAT amount
+            totalRow,
+          ],
+        },
+         layout: 'lightHorizontalLines',
+      },
+
+    ],
+    styles: {
+      header: {
+        fontSize: 18,
+        bold: true,
+        margin: [0, 20, 0, 10],
+      },
+      totalRow: {
+        fontSize: 14,
+        bold: true,
+      },
+    },
+  };
+  pdfMake.createPdf(docDefinition).download('sales_invoice.pdf');
+  }
+  catch (error) {
+    console.error('Error fetching image data URL', error);
+  }
+
+};
+
+const calculateTotal = (lineItems) => {
+  return lineItems.reduce((total, item) => total + item.quantity * item.price, 0)*1.16.toFixed(2);
+};
+
 
 const removeOrderLine = (index) => {
   orderLines.value.splice(index, 1);
+};
+
+const calculateVATAmount = (lineItems) => {
+  // Adjust the VAT rate as needed
+  const vatRate = 0.16; // Assuming a VAT rate of 15%
+  const totalAmount = calculateTotal(lineItems)/1.16;
+  return (totalAmount * vatRate).toFixed(2);
 };
 
 const orderLines = ref([
   {
     itemName: '',
     quantity: 0,
-    price: 0
+    price: 0,
+    description:'',
   }
 ]);
+
+const formatNumber=(number)=> {
+  return new Intl.NumberFormat('en-US').format(number);
+}
 
 const addOrderLine = () => {
   orderLines.value.push({
@@ -51,17 +172,21 @@ const props=  defineProps({
     orders:Object,
     customers:Object,
     items:Object,
+    lastSerialNo:String,
+    companyInfo:Object,
   })
 
 const form= useForm({
   posting_date:new Date(),
   customer_id:'',
   orderLines:'',
+  lastSerialNo:props.lastSerialNo,
 })
 
 const submit=()=>
 {
-    console.log(orderLines.value);
+    // console.log(orderLines.value);
+    generatePDF()
   form.orderLines=orderLines.value
   form.post(route('salesOrder.store'))
 }
@@ -69,9 +194,10 @@ const submit=()=>
 
 const updateUnitPrice = (index) => {
     // alert(orderLines.value[index].itemName)
-  const selectedItem = props.items.find(item => item.code === orderLines.value[index].itemName);
+  const selectedItem = props.items.data.find(item => item.code === orderLines.value[index].itemName);
   if (selectedItem) {
     orderLines.value[index].price = selectedItem.unit_price;
+    orderLines.value[index].description = selectedItem.description;
   }
 };
 
@@ -337,28 +463,29 @@ n
             <h2 class="text-center">Items</h2>
             <div v-for="(orderLine, index) in orderLines" :key="index" >
 
-            <div class="flex flex-col items-center justify-between w-full space-x-3">
+            <div class="flex flex-col items-center justify-between w-full space-x-3 text-xs">
                 <p>
             <form @submit.prevent="addItem(index)">
-                <div class="my-2">
+                <div class="my-2 space-x-4 text-xs">
                  {{ index + 1 }}
 
                 <Dropdown
                  v-model="orderLine.itemName"
-                 :options="props.items"
-                 option-label="code"
+                 :options="props.items.data"
+                 option-label="search_name"
                  option-value="code"
                  style="width:100px;"
+                 class="text-xs"
                  filter
                  @change="updateUnitPrice(index)"
 
                 />
 
-                <label for="quantity">Qty:</label>
-                <InputText v-model="orderLine.quantity" type="number" class="small" required style="width:100px;"/>
+                {{ orderLine.description }}
+                <InputText v-model="orderLine.quantity" type="number" class="text-xs small" required style="width:100px;"/>
 
                 <label for="price">Price:</label>
-                <InputText v-model="orderLine.price" type="number" required style="width:100px;"/>
+                <InputText v-model="orderLine.price" type="number" class="text-xs" required style="width:100px;"/>
 
                  <span>{{ lineAmount(index) }}</span>
 
@@ -375,19 +502,33 @@ n
 
         </div>
 
-<div class="flex justify-end p-3 text-center rounded bg-slate-400 md">
-      <h3>Total Order Amount:</h3>
-      <span>{{ orderTotal }}</span>
+<div class="flex flex-col items-center rounded bg-slate-400 md">
+    <div class="grid grid-cols-2">
+        <h3 class="m-4 font-bold">Amount</h3>
+           <span class="w-24 p-3 font-bold text-right rounded-lg bg-slate-300">{{ formatNumber(orderTotal) }}</span>
     </div>
+    <div class="grid grid-cols-2">
+        <h3 class="m-4 font-bold">VAT</h3>
+      <span class="w-24 p-3 font-bold text-right rounded-lg bg-slate-300">{{ 0 }}</span>
+    </div>
+     <div class="grid grid-cols-2">
+        <h3 class="m-4 font-bold ">Total</h3>
+      <span class="w-24 p-3 font-bold text-right rounded-lg bg-slate-300">{{ formatNumber(orderTotal) }}</span>
+     </div>
+
+</div>
 
 
 
 
 
         <Button
-          severity="info"
+          severity="success"
          @click="submit"
-          :label=mode.state
+          label="Post"
+          icon="pi pi-send"
+          class="icon-left"
+
           :disabled="form.processing"
 
         />

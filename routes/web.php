@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::get('sales',fn()=>inertia('Sales/Dashboard'))->name('sales.dashboard')->breadcrumb('sales');
 
     Route::resource('salesOrder', SalesOrderController::class);
+    Route::get('get-logo',[SalesOrderController::class, 'convertImageToDataURL'])->name('convertLogo');
     Route::resource('purchaseOrder',PurchaseOrderController::class);
 
 
