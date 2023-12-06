@@ -15,7 +15,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ItemController;
-require('auth.php');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,14 +27,14 @@ require('auth.php');
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
 
 Route::get('/dashboard', function () {
@@ -83,6 +83,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('invoices',InvoiceController::class);
     Route::resource('invoiceLines',InvoiceLineController::class);
+
+require('auth.php');
+
+    Route::get('/{any}', function () {
+    return view('app');
+})->where('any', '.*');
 
 
 });
