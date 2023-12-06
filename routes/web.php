@@ -7,11 +7,11 @@ use App\Http\Controllers\{BusPostingGroupController, CustomerController,
                             InvoiceLineController,
                             ItemEntryController,
                             ItemPostingGroupController,
-                            OrderController,
-                            OrderLineController,
+                            // OrderController,
+                            // OrderLineController,
                             ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController};
-
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+// use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ItemController;
@@ -35,6 +35,9 @@ require('auth.php');
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
+
+Route::get('login', [AuthenticatedSessionController::class, 'create'])
+                ->name('login');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
