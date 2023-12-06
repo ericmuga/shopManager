@@ -11,7 +11,7 @@ use App\Http\Controllers\{BusPostingGroupController, CustomerController,
                             // OrderLineController,
                             ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController};
 
-// use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ItemController;
