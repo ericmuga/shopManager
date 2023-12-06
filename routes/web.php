@@ -10,7 +10,7 @@ use App\Http\Controllers\{BusPostingGroupController, CustomerController,
                             // OrderController,
                             // OrderLineController,
                             ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController};
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
 // use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,23 +27,21 @@ require('auth.php');
 |
 */
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
 
-Route::get('login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/',fn()=>Auth::check()?redirect('dashboard'):redirect('login'));
+//Route::get('/',fn()=>Auth::check()?redirect('dashboard'):redirect('login'));
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
