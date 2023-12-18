@@ -10,8 +10,8 @@
 
 <script setup>
 import { watch,ref, computed, toRefs } from "@vue/runtime-core";
-import  debounce  from "lodash/debounce";
-import {router} from '@inertiajs/vue3'
+import {debounce} from "lodash";
+import {router} from '@inertiajs/vue3';
 
   const props=defineProps({model:String})
   const {model}= toRefs(props)
