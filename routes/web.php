@@ -87,6 +87,16 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('series',NoSeriesController::class);
 
+    Route::get('/fonts/{filename}', function ($filename) {
+            $path = public_path('fonts/' . $filename);
+
+            if (file_exists($path)) {
+                return response(null,200,['Content-Type'=>'application/octet-stream'])->file($path);
+            }
+
+            return response('Font not found', 404);
+        })->where('filename', '.*');
+
 
 
 });

@@ -13,162 +13,134 @@ import {watch, ref,computed} from 'vue';
 import { format } from 'date-fns';
 import axios from 'axios';
 import moment from 'moment';
-// import logo from '@/assets/logo.jpg';
-
-// import pdfMake from 'pdfmake/build/pdfmake';
-// // import pdfFonts from 'pdfmake/build/vfs_fonts';
-// import {fonts} from 'pdfmake/build/vfs_fonts';
-
-
-// pdfMake.vfs = fonts;
-
-import "pdfmake/build/pdfmake";
-const pdfMake = window["pdfMake"];
-
-pdfMake.fonts = {
-    Roboto: {
-        normal: "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf",
-        bold: "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf",
-        italics: "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf",
-        bolditalics: "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf",
-    },
-};
-
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const totalQuantity = computed(() => {
-  // Assuming orderLines is an array of objects with a 'quantity' property
   return orderLines.value.reduce((total, orderLine) => total + orderLine.quantity, 0);
 });
-const currentDate = moment().format('DD/MM/YYYY'); // Format the current date
 
-const generatePDF = async ()=> {
-    const lineItems = orderLines.value;
-    try {
-        const response = await axios.get(route('convertLogo'));
-        const logo = response.data.dataUrl;
+const currentDate = moment().format('DD/MM/YYYY');
+
+const generatePDF = async () => {
 
 
+  const lineItems = orderLines.value;
+  try {
+    const response = await axios.get(route('convertLogo'));
+    const logo = response.data.dataUrl;
 
-        const tableBody = lineItems.map(item => [item.itemName+'-'+item.description, item.quantity, `Ksh.${item.price}`, `Ksh.${formatNumber(item.quantity * item.price)}`]);
-        const totalRow = ['', '', 'Total Amount', ` Ksh.${formatNumber(calculateTotal(lineItems))}`];
-        const vatAmountRow = ['', '', 'VAT Amount', `Ksh.${formatNumber(calculateVATAmount(lineItems))}`];
-        const docDefinition = {
-            content: [
+    const totalRow = ['', '', 'Total Amount', ` Ksh.${formatNumber(calculateTotal(lineItems))}`];
+    const vatAmountRow = ['', '', 'VAT Amount', `Ksh.${formatNumber(calculateVATAmount(lineItems))}`];
 
-            {
-                columns: [
-                {},
-                // Logo
-                {
-                    image: logo,
-                    width: 100,
-                    alignment: 'center',
-                },
-                // Company Info
-                {
-                    width: '*',
-                    text: [
-                    { text: `Email: ${props.companyInfo.email}\n`, alignment: 'right' },
-                    { text: `Phone: ${props.companyInfo.phone}\n`, alignment: 'right' },
-                    { text: `PIN: ${props.companyInfo.pin}`, alignment: 'right' },
-                    ],
-                },
-                ],
-            },
-            {
-                text: 'Batian Optical Centre',
-                style: 'header',
-                alignment: 'center',
-            },
-            {
-                text: `Date: ${currentDate}`,
-                style: 'subheader',
-                alignment: 'right',
-                margin: [0, 10, 0, 0], // Adjust the margin as needed
-            },
-            {
-                text: props.lastSerialNo,
-                style: 'header',
-                alignment: 'right',
-            },
+    const grandTotalRow = ['', '', 'Amt. Inc VAT', `Ksh.${formatNumber(calculateTotal(lineItems)+calculateVATAmount(lineItems))}`];
 
-            {
-                text: 'Sales Invoice',
-                style: 'header',
-                alignment: 'center',
-            },
-            {
-                // Display line items in a table
-                table: {
-                    headerRows: 1,
-                    widths: ['*', 'auto', 'auto', 'auto'], // Adjust column widths as needed
-                    body: [
-                    ['Item Name', 'Quantity', 'Unit Price', 'Total Amount'],
-                    ...tableBody,
-                    vatAmountRow, // Add a row for VAT amount
-                    totalRow,
-                    ],
-                },
-                layout: 'lightHorizontalLines',
-            },
+    const doc = new jsPDF();
 
-            ],
-            styles: {
-                header: {
-                    fontSize: 18,
-                    bold: true,
-                    margin: [0, 20, 0, 10],
-                },
-                totalRow: {
-                    fontSize: 14,
-                    bold: true,
-                },
-            },
-        };
-        pdfMake.createPdf(docDefinition).download('sales_invoice.pdf');
-    }
-    catch (error) {
-        console.error('Error fetching image data URL', error);
-    }
+    // Add company information with reduced font size
+    const companyInfoText = [
+      { text: `Email: ${props.companyInfo.email}`, fontSize: 8 },
+      { text: `Phone: ${props.companyInfo.phone}`, fontSize: 8 },
+      { text: `PIN: ${props.companyInfo.pin}`, fontSize: 8 },
+    ];
 
+    // Add the company information at the top right corner
+    companyInfoText.forEach((info, index) => {
+      doc.text(info.text, doc.internal.pageSize.width - 10, 10 + index * 10, { align: 'right', fontSize: info.fontSize });
+    });
+
+    // Add Batian Optical Centre and Sales Invoice headings
+    doc.text('Batian Optical Centre', doc.internal.pageSize.width / 2, 20, { align: 'center' });
+    doc.text('Sales Invoice', doc.internal.pageSize.width / 2, 30, { align: 'center' });
+
+    // Add date and serial number with reduced font size
+    doc.text(`Date: ${currentDate}`, 10, 20, { fontSize: 8 });
+    doc.text(`Invoice No.: ${props.lastSerialNo}`, 10, 30, { fontSize: 8 });
+
+    // Calculate the width and height for the centered logo
+    const logoWidth = 15; // Adjust as needed
+    const logoHeight = (logoWidth * 50) / 50; // Maintain the aspect ratio
+    const xPosition = (doc.internal.pageSize.width - logoWidth) / 2;
+    const yPosition = 40; // Adjust as needed
+
+    // Add the logo in the center
+    doc.addImage(logo, 'JPEG', xPosition, yPosition, logoWidth, logoHeight);
+
+    const columns = ['Item Name', 'Quantity', 'Unit Price', 'Total Amount'];
+    const tableBody = lineItems.map(item => [item.itemName + '-' + item.description, item.quantity, `Ksh.${item.price}`, `Ksh.${formatNumber(item.quantity * item.price)}`]);
+    tableBody.push(vatAmountRow, totalRow, grandTotalRow);
+    const rows = [columns, ...tableBody, vatAmountRow, totalRow];
+
+
+    // Adjust startY to position the table below the logo and company information
+    const tableYPosition = yPosition + logoHeight + 10; // Adjust as needed
+
+// Set the font size for the table
+const tableFontSize = 8; // Adjust as needed
+
+doc.autoTable({
+  head: [columns],
+  body: tableBody,
+  theme: 'grid',
+  startY: tableYPosition,
+  margin: { top: 10 },
+  styles: {
+    fontSize: tableFontSize,
+  },
+});
+
+    // Add the totalRow and vatAmountRow manually
+    const totalRowYPosition = tableYPosition + (tableBody.length + 1) * 10; // Adjust as needed
+    const vatAmountRowYPosition = totalRowYPosition + 10; // Adjust as needed
+
+    doc.text(totalRow[2], doc.internal.pageSize.width - 10, totalRowYPosition, { align: 'right', fontSize: 8 });
+    doc.text(totalRow[3], doc.internal.pageSize.width - 10, totalRowYPosition + 10, { align: 'right', fontSize: 8 });
+    doc.text(vatAmountRow[2], doc.internal.pageSize.width - 10, vatAmountRowYPosition, { align: 'right', fontSize: 8 });
+    doc.text(vatAmountRow[3], doc.internal.pageSize.width - 10, vatAmountRowYPosition + 10, { align: 'right', fontSize: 8 });
+
+    doc.save('sales_invoice.pdf');
+  } catch (error) {
+    console.error('Error fetching image data URL', error);
+  }
 };
+
 
 const calculateTotal = (lineItems) => {
-    return lineItems.reduce((total, item) => total + item.quantity * item.price, 0)*1.16.toFixed(2);
+  return lineItems.reduce((total, item) => total + item.quantity * item.price, 0) * 1.16.toFixed(2);
 };
 
-
 const removeOrderLine = (index) => {
-    orderLines.value.splice(index, 1);
+  orderLines.value.splice(index, 1);
 };
 
 const calculateVATAmount = (lineItems) => {
-    // Adjust the VAT rate as needed
-    const vatRate = 0.16; // Assuming a VAT rate of 15%
-    const totalAmount = calculateTotal(lineItems)/1.16;
-    return (totalAmount * vatRate).toFixed(2);
+  const vatRate = 0.16;
+  const totalAmount = calculateTotal(lineItems) / 1.16;
+  return (totalAmount * vatRate).toFixed(2);
 };
 
 const orderLines = ref([
-{
+  {
     itemName: '',
     quantity: 0,
     price: 0,
-    description:'',
-}
+    description: '',
+  },
 ]);
 
-const formatNumber=(number)=> {
-    return new Intl.NumberFormat('en-US').format(number);
-}
+const formatNumber = (number) => {
+  return new Intl.NumberFormat('en-US').format(number);
+};
 
 const addOrderLine = () => {
-    orderLines.value.push({
-        itemName: '',
-        quantity: 0,
-        price: 0
-    });
+  orderLines.value.push({
+    itemName: '',
+    quantity: 0,
+    price: 0,
+  });
 };
+
+
 
 const addItem = (index) => {
     // Add your logic here to handle the submission of the form data,
