@@ -20,7 +20,8 @@ class CompanySetupSeeder extends Seeder
           'pin'=>'P00012834J',
           'bank_name'=>'Coop',
           'account_no'=>'011000003242',
-          'branch_name'=>'Nyeri'
+          'branch_name'=>'Nyeri',
+          'phone'=>'0720-816-931'
 
         ]);
 
