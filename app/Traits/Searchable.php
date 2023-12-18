@@ -3,8 +3,8 @@
 namespace App\Traits;
 
 use App\Services\SearchQueryService;
-use Illuminate\Database\Eloquent\Builder ;
-use Illuminate\Http\Request;
+// use Illuminate\Database\Eloquent\Builder ;
+// use Illuminate\Http\Request;
 
 namespace App\Traits;
 

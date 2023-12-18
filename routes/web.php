@@ -41,7 +41,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-//Route::get('/',fn()=>Auth::check()?redirect('dashboard'):redirect('login'));
+Route::get('/',fn()=>Auth::check()?redirect('dashboard'):redirect('login'));
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -84,13 +84,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('invoices',InvoiceController::class);
     Route::resource('invoiceLines',InvoiceLineController::class);
 
-require('auth.php');
 
-    Route::get('/{any}', function () {
-    return view('app');
-})->where('any', '.*');
+
+//     Route::get('/{any}', function () {
+//     return view('app');
+// })->where('any', '.*');
 
 
 });
 
 
+require('auth.php');
