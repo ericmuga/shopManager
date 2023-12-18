@@ -75,7 +75,7 @@ public function convertImageToDataURL()
 
 
 
-           $serial=NoSeries::first();
+           $serial=NoSeries::firstWhere('document_type','Sales Invoice');
            $serial->last_no_used=$request->document_no;
            $serial->save();
 
