@@ -71,6 +71,11 @@ window.addEventListener('resize', () => {
         <!-- Add content for the Financials card -->
       </div>
 
+       <div ref="noSeriesCard" class="mb-4 card" @click="router.get(route('series.index'))">
+        <h3 class="mb-2 text-xl font-semibold">No. Series</h3>
+        <!-- Add content for the Financials card -->
+      </div>
+
       <!-- Administration Card -->
       <!-- <div ref="administrationCard" class="mb-4 card">
         <h3 class="mb-2 text-xl font-semibold">Administration</h3>

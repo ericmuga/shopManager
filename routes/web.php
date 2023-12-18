@@ -7,7 +7,8 @@ use App\Http\Controllers\{BusPostingGroupController, CustomerController,
                             InvoiceLineController,
                             ItemEntryController,
                             ItemPostingGroupController,
-                            // OrderController,
+    NoSeriesController,
+    // OrderController,
                             // OrderLineController,
                             ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController};
 
@@ -84,11 +85,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('invoices',InvoiceController::class);
     Route::resource('invoiceLines',InvoiceLineController::class);
 
+    Route::resource('series',NoSeriesController::class);
 
-
-//     Route::get('/{any}', function () {
-//     return view('app');
-// })->where('any', '.*');
 
 
 });
