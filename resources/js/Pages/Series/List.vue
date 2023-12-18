@@ -270,9 +270,10 @@ const showUpdateModal=(item)=>{
             <label for="last_date_used">Last Date Used</label>
         </span>
 
-         <span class="mt-4 p-float-label">
+         <span class="flex flex-col gap-6 mt-4">
+           <label for="last_no_used">Last No. Used</label>
             <InputText id="last_no_used" v-model="form.last_no_used" />
-            <label for="last_no_used">Last No. Used</label>
+
         </span>
          <span class="mt-4 p-float-label">
             <InputNumber id="characters" v-model="form.characters" />

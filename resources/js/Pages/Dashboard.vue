@@ -47,9 +47,9 @@ window.addEventListener('resize', () => {
         </template> -->
 
 
-  <div class="mt-2 dashboard">
+  <div class="max-w-sm mt-2 text-center dashboard">
     <!-- Stats Bar at the Top -->
-    <div class="p-4 text-white bg-blue-500 stats-bar">
+    <div class="p-4 mt-3 text-white bg-blue-500 rounded-lg stats-bar">
       <h2 class="text-2xl font-semibold">Dashboard</h2>
       <!-- Add any other stats or information you want to display here -->
     </div>
@@ -62,7 +62,7 @@ window.addEventListener('resize', () => {
         <!-- Add content for the Customers card -->
       </div>
 
-      <div ref="customerCard" class="mb-4 card" @click="router.get(route('customers.index'))">
+      <div ref="customerCard" class="mb-4 card" @click="alert('Module Under Maintenance')">
         <h3 class="mb-2 text-xl font-semibold">Vendors</h3>
         <!-- Add content for the Customers card -->
       </div>

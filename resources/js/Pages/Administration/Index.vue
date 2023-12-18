@@ -44,9 +44,9 @@ window.addEventListener('resize', () => {
         </template> -->
 
 
-  <div class="mt-2 dashboard">
+  <div class="mt-2 text-center dashboard ">
     <!-- Stats Bar at the Top -->
-    <div class="p-4 text-white bg-blue-500 stats-bar">
+    <div class="p-4 mt-4 text-white bg-blue-500 rounded-lg stats-bar">
       <h2 class="text-2xl font-semibold">Administration</h2>
       <!-- Add any other stats or information you want to display here -->
     </div>
