@@ -266,7 +266,7 @@ const showUpdateModal=(item)=>{
         </span>
 
        <span class="mt-4 p-float-label ">
-            <Calendar type="date" id="last_date_used" v-model="form.last_date_used" />
+            <input  type="date" id="last_date_used" v-model="form.last_date_used" />
             <label for="last_date_used">Last Date Used</label>
         </span>
 
