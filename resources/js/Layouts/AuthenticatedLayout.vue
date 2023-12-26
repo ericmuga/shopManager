@@ -14,6 +14,7 @@ const subMenuOpen = ref({
   dashboard: false,
   sales: false,
   purchases: false,
+  inventory:false,
   // Add more submenu states as needed
 });
 
@@ -71,6 +72,18 @@ const toggleSubMenu = (menuKey) => {
         <div class="py-2 pl-8 text-black cursor-pointer" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Vendors </Link></div>
           <!-- <div class="py-2 pl-8 cursor-pointer">Submenu 2</div> -->
         </div>
+
+        <div @click="toggleSubMenu('inventory')" class="px-4 py-2 cursor-pointer">
+          <span class="text-black">Inventory</span>
+          <span v-if="subMenuOpen['inventory']" class="ml-2 text-white">&#9660;</span>
+    <span v-else class="ml-2 text-white">&#9654;</span>
+        </div>
+        <div v-show="subMenuOpen['inventory']">
+        <div class="py-2 pl-8 text-black" ><Link :href="route('items.index')" :active="route().current('items.index')">Items </Link></div>
+        <div class="py-2 pl-8 text-black" ><Link :href="route('itemPostingGroups.index')" :active="route().current('customers.index')">Setups </Link></div>
+          <!-- <div class="py-2 pl-8 cursor-pointer">Submenu 2</div> -->
+        </div>
+
 
         <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="px-4">

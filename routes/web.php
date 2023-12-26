@@ -19,6 +19,8 @@ use App\Http\Controllers\ItemController;
 use App\Models\Customer;
 use Glhd\Gretel\View\Breadcrumbs;
 use App\Http\Controllers\SalesController;
+use App\Models\Item;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -66,9 +68,15 @@ Route::middleware('auth')->group(function () {
     Route::get('administration',function(){return inertia('Administration/Index');})->name('administration.index');
     Route::get('administration/posting-group',function(){return inertia('Administration/PostingGroups');})->name('administration.posting-groups');
 
-    Route::resource('items', ItemController::class);
+    Route::resource('items', ItemController::class)->breadcrumbs([
+                                                                            'index' => 'Items',
+                                                                            'create' => 'New Item',
+                                                                            'show' => fn(Item $item) => $item->name,
+                                                                            'edit' => 'Edit',
+                                                                        ]);
     Route::resource('itemEntries',ItemEntryController::class);
-    Route::resource('itemPostingGroups',ItemPostingGroupController::class);
+    Route::resource('itemPostingGroups',ItemPostingGroupController::class)->breadcrumbs(['Item Posting Groups','items.index']);
+;
     Route::resource('detailedItemEntries',DetailedItemEntryController::class);
 
 
