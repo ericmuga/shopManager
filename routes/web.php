@@ -16,7 +16,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ItemController;
-
+use App\Models\Customer;
+use Glhd\Gretel\View\Breadcrumbs;
+use App\Http\Controllers\SalesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,7 +51,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('customers', CustomerController::class);
+    Route::resource('customers', CustomerController::class)->breadcrumbs([
+                                                                            'index' => 'Customers',
+                                                                            'create' => 'New Customer',
+                                                                            'show' => fn(Customer $customer) => $customer->name,
+                                                                            'edit' => 'Edit',
+                                                                        ]);
+
+
+
     Route::resource('customerEntries',CustomerEntryController::class);
     Route::resource('detailedCustomerEntries',DetailedItemEntryController::class);
 
@@ -64,6 +74,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('taxPostingGroups',TaxPostingGroupController::class);
     Route::resource('busPostingGroups',BusPostingGroupController::class);
+
+    // routes/web.php
+
+
+
+Route::get('/sales-summary', [SalesController::class, 'index'])->name('sales.summary')->breadcrumb('Sales Summary');
 
 
     // Route::resource('orders',OrderController::class);

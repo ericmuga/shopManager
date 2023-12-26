@@ -38,11 +38,17 @@ const generatePDF = async () => {
     const doc = new jsPDF();
 
     // Add company information with reduced font size
-    const companyInfoText = [
-      { text: `Email: ${props.companyInfo.email}`, fontSize: 8 },
-      { text: `Phone: ${props.companyInfo.phone}`, fontSize: 8 },
-      { text: `PIN: ${props.companyInfo.pin}`, fontSize: 8 },
-    ];
+   const companyInfoText = [
+  `Email: ${props.companyInfo.email}`,
+  `Phone: ${props.companyInfo.phone}`,
+  `PIN: ${props.companyInfo.pin}`,
+];
+
+// Set the font size for company information
+doc.setFontSize(8);
+
+// Add each line of company information
+
 
     // Add the company information at the top right corner
     companyInfoText.forEach((info, index) => {
@@ -68,8 +74,8 @@ const generatePDF = async () => {
 
     const columns = ['Item Name', 'Quantity', 'Unit Price', 'Total Amount'];
     const tableBody = lineItems.map(item => [item.itemName + '-' + item.description, item.quantity, `Ksh.${item.price}`, `Ksh.${formatNumber(item.quantity * item.price)}`]);
-    tableBody.push(vatAmountRow, totalRow, grandTotalRow);
-    const rows = [columns, ...tableBody, vatAmountRow, totalRow];
+    tableBody.push(vatAmountRow, totalRow);
+    const rows = [columns, ...tableBody];
 
 
     // Adjust startY to position the table below the logo and company information
@@ -93,10 +99,10 @@ doc.autoTable({
     const totalRowYPosition = tableYPosition + (tableBody.length + 1) * 10; // Adjust as needed
     const vatAmountRowYPosition = totalRowYPosition + 10; // Adjust as needed
 
-    doc.text(totalRow[2], doc.internal.pageSize.width - 10, totalRowYPosition, { align: 'right', fontSize: 8 });
-    doc.text(totalRow[3], doc.internal.pageSize.width - 10, totalRowYPosition + 10, { align: 'right', fontSize: 8 });
-    doc.text(vatAmountRow[2], doc.internal.pageSize.width - 10, vatAmountRowYPosition, { align: 'right', fontSize: 8 });
-    doc.text(vatAmountRow[3], doc.internal.pageSize.width - 10, vatAmountRowYPosition + 10, { align: 'right', fontSize: 8 });
+    // doc.text(totalRow[2], doc.internal.pageSize.width - 10, totalRowYPosition, { align: 'right', fontSize: 8 });
+    // doc.text(totalRow[3], doc.internal.pageSize.width - 10, totalRowYPosition + 10, { align: 'right', fontSize: 8 });
+    // doc.text(vatAmountRow[2], doc.internal.pageSize.width - 10, vatAmountRowYPosition, { align: 'right', fontSize: 8 });
+    // doc.text(vatAmountRow[3], doc.internal.pageSize.width - 10, vatAmountRowYPosition + 10, { align: 'right', fontSize: 8 });
 
     doc.save('sales_invoice.pdf');
   } catch (error) {
@@ -424,7 +430,7 @@ const showUpdateModal=(order)=>{
             </div>
         </div>
 
-        <Modal :show="showModal" @close="showModal=false" >
+        <Modal :show="showModal" @close="showModal=false" :max-width="'3xl'" :closeable="true" >
 
             <div class="flex flex-col p-4 rounded-sm">
 
