@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -9,7 +9,19 @@ import { Link } from '@inertiajs/vue3';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
 import 	{ChevronDoubleRightIcon} from '@heroicons/vue/16/solid';
-const sidebarOpen = ref(true);
+const sidebarOpen = ref(window.innerWidth >= 768);
+const handleResize = () => {
+  sidebarOpen.value = window.innerWidth >= 768;
+};
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize);
+});
+// const sidebarOpen = ref(true);
 const subMenuOpen = ref({
   dashboard: false,
   sales: false,
@@ -20,7 +32,14 @@ const subMenuOpen = ref({
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value;
+
+  // Ensure that the sidebar is visible on small screens when the button is clicked
+  if (window.innerWidth < 768) {
+    const sidebar = document.querySelector('.w-64');
+    sidebar.style.width = sidebarOpen.value ? '200px' : '0';
+  }
 };
+
 
 const toggleSubMenu = (menuKey) => {
   subMenuOpen.value[menuKey] = !subMenuOpen.value[menuKey];
@@ -157,5 +176,24 @@ const toggleSubMenu = (menuKey) => {
 
 .cursor-pointer:hover {
   background-color: gray;
+}
+
+@media (max-width: 767px) {
+  .w-64 {
+    width: 0;
+    overflow: hidden;
+  }
+
+  .hidden {
+    width: 0;
+    overflow: hidden;
+  }
+
+  /* Explicitly set display to block for the button */
+  header button {
+    display: block !important;
+  }
+
+  /* Adjust any other styles for small screens if needed */
 }
 </style>
