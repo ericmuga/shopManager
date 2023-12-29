@@ -50,6 +50,13 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate(
+            ['customer_name'=>'required',
+             'phone_number'=>'required',
+             'bus_posting_group_id'=>'required',
+             'tax_posting_group_id'=>'required',
+            ]
+        );
         Customer::create($request->all());
         return redirect(route('customers.index'));
     }

@@ -9,7 +9,8 @@ import { Head } from '@inertiajs/vue3';
 import Toolbar from 'primevue/toolbar';
 import { useForm } from '@inertiajs/vue3'
 // import { Inertia } from '@inertiajs/inertia';
-
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue'
 import { ref} from 'vue';
 import Pagination from '@/Components/Pagination.vue'
 import Swal from 'sweetalert2'
@@ -40,6 +41,7 @@ const createOrUpdateCustomer=()=>{
                     { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`Customer ${mode.state}d Successfully!`,'','success');
+                                          showModal.value=false;
                                     }
                     }
                    )
@@ -48,9 +50,9 @@ const createOrUpdateCustomer=()=>{
                 { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`Customer ${mode.state}d Successfully!`,'','success');
+                                      showModal.value=false;
                                     }
                     })
-      showModal.value=false;
 
 
 }
@@ -133,10 +135,7 @@ const showUpdateModal=(customer)=>{
                                     <div>
                                         <Pagination :links="customers.meta.links" />
                                     </div>
-                                    <!-- <Modal :show="showModal.value">
-                                        <FilterPane :propsData="columnListing" />
-                                    </Modal> -->
-                                      <!-- <FilterPane :propsData="columnListing" /> -->
+
 
                                 </template>
 
@@ -271,26 +270,35 @@ const showUpdateModal=(customer)=>{
 
           <form  @submit.prevent="createOrUpdateCustomer()">
 
-<div class="flex flex-col justify-center gap-3">
+<div class="grid w-full gap-2 md:grid-cols-2 sm:grid-cols-1">
 
 
+    <div class="w-full">
         <InputText
            placeholder="Name"
 
            v-model="form.customer_name"
+
         />
+        <InputError class="mt-2" :message="form.errors.customer_name" />
+    </div>
+
         <InputText
 
            placeholder="email"
            v-model="form.email"
 
         />
-        <InputText
+        <div class="w-full">
+            <InputText
 
-           placeholder="Phone No."
-           v-model="form.phone_number"
+                    placeholder="Phone No."
+                    v-model="form.phone_number"
 
-        />
+                    />
+                           <InputError class="mt-2" :message="form.errors.phone_number" />
+        </div>
+
 
         <InputText
 
@@ -323,16 +331,21 @@ const showUpdateModal=(customer)=>{
        <div class="flex flex-col items-center justify-center gap-3 p-1">
         <label>D.O.B.</label>
         <input type="date" v-model="form.dob"/>
-        <Dropdown
-         v-model="form.tax_posting_group_id"
-         :options="props.tax_pgs"
-         optionValue="id"
-         optionLabel="code"
-         placeholder="Tax Posting Group"
-         filter
+        <div>
+            <Dropdown
+                v-model="form.tax_posting_group_id"
+                :options="props.tax_pgs"
+                optionValue="id"
+                optionLabel="code"
+                placeholder="Tax Posting Group"
+                filter
 
-        />
-         <Dropdown
+                />
+                       <InputError class="mt-2" :message="form.errors.tax_posting_group_id" />
+        </div>
+
+        <div>
+             <Dropdown
          v-model="form.bus_posting_group_id"
          :options="props.bus_pgs"
          optionValue="id"
@@ -341,11 +354,14 @@ const showUpdateModal=(customer)=>{
          filter
 
         />
+               <InputError class="mt-2" :message="form.errors.bus_posting_group_id" />
+        </div>
+
        </div>
         <!-- <Password v-model="form.Password" :feedback="true" /> -->
 
 
-     <div class="flex flex-row items-center justify-center gap-3 p-1 text-center ">
+     <div class="sm:col-span-2 ">
         <Button
 
           type="submit"
