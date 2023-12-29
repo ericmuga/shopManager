@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 import Modal from '@/Components/Modal.vue'
 import Drop from '@/Components/Drop.vue'
 import {watch, ref} from 'vue';
-
+import InputError from '@/Components/InputError.vue'
 
 const props=  defineProps({
     items:Object,
@@ -42,6 +42,7 @@ const createOrUpdateitem=()=>{
                     { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`item ${mode.state}d Successfully!`,'','success');
+                                      showModal.value=false;
                                     }
                     }
                    )
@@ -50,9 +51,10 @@ const createOrUpdateitem=()=>{
                 { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`item ${mode.state}d Successfully!`,'','success');
+                                      showModal.value=false;
                                     }
                     })
-      showModal.value=false;
+
 
 
 }
@@ -279,41 +281,50 @@ const showUpdateModal=(item)=>{
 
 
        <span class="mt-4 p-float-label">
-            <InputText id="code" v-model="form.code" />
+            <InputText id="code" v-model="form.code" class="w-15" />
             <label for="code">Code</label>
+            <InputError class="mt-2" :message="form.errors.code" />
         </span>
        <span class="mt-4 p-float-label">
             <InputText id="description" v-model="form.description" />
             <label for="description">Description</label>
+            <InputError class="mt-2" :message="form.errors.description" />
         </span>
 
        <span class="mt-4 p-float-label">
             <InputText id="sales_uom" v-model="form.sales_uom" />
             <label for="sales_uom">Sales Unit of measure</label>
+            <InputError class="mt-2" :message="form.errors.sales_uom" />
         </span>
 
          <span class="mt-4 p-float-label">
             <InputText id="base_uom" v-model="form.base_uom" />
             <label for="base_uom">Base Unit of measure</label>
+            <InputError class="mt-2" :message="form.errors.base_uom" />
         </span>
          <span class="mt-4 p-float-label">
             <InputText id="unit_cost" v-model="form.unit_cost" />
             <label for="unit_cost">Unit Cost</label>
+            <InputError class="mt-2" :message="form.errors.unit_cost" />
         </span>
          <span class="mt-4 p-float-label">
             <InputText id="unit_price" v-model="form.unit_price" />
             <label for="unit_price">Unit Price</label>
+            <InputError class="mt-2" :message="form.errors.unit_price" />
         </span>
-
+        <div >
         <Dropdown
-            filter
-           placeholder="Type"
-           v-model="form.type"
-           :options="['Inventory','Service']"
+                    filter
+                placeholder="Type"
+                v-model="form.type"
+                :options="['Inventory','Service']"
 
 
-        />
-         <Dropdown
+                />
+                <InputError class="mt-2" :message="form.errors.type" />
+        </div>
+        <div>
+            <Dropdown
             filter
            placeholder="Posting Group"
            v-model="form.item_posting_group_id"
@@ -322,8 +333,11 @@ const showUpdateModal=(item)=>{
            optionLabel="code"
 
         />
+        <InputError class="mt-2" :message="form.errors.item_posting_group_id" />
+        </div>
 
-        <Dropdown
+        <div>
+            <Dropdown
             filter
            placeholder="Tax Group"
            v-model="form.tax_group_id"
@@ -332,6 +346,10 @@ const showUpdateModal=(item)=>{
            optionLabel="code"
 
         />
+        <InputError class="mt-2" :message="form.errors.tax_group_id" />
+        </div>
+
+
 
         <InputText
            hidden
