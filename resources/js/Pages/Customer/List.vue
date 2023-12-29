@@ -299,20 +299,26 @@ const showUpdateModal=(customer)=>{
                            <InputError class="mt-2" :message="form.errors.phone_number" />
         </div>
 
-
+       <div>
         <InputText
 
            placeholder="id_no"
            v-model="form.id_no"
 
         />
+         <InputError class="mt-2" :message="form.errors.id_no" />
+       </div>
 
-        <InputText
+        <div>
+            <InputText
 
            placeholder="Guardian ID No."
            v-model="form.guardian_id_no"
 
         />
+
+        </div>
+
 
         <InputText
 

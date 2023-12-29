@@ -55,6 +55,7 @@ class CustomerController extends Controller
              'phone_number'=>'required',
              'bus_posting_group_id'=>'required',
              'tax_posting_group_id'=>'required',
+             'id_no'=>'required',
             ]
         );
     }
