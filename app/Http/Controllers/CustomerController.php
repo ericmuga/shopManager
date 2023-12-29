@@ -48,7 +48,7 @@ class CustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    private function validateRequest(Request $request)
     {
         $request->validate(
             ['customer_name'=>'required',
@@ -57,6 +57,10 @@ class CustomerController extends Controller
              'tax_posting_group_id'=>'required',
             ]
         );
+    }
+    public function store(Request $request)
+    {  $this->validateRequest($request);
+
         Customer::create($request->all());
         return redirect(route('customers.index'));
     }
@@ -79,7 +83,8 @@ class CustomerController extends Controller
      */
     public function update(Request $request)
     {
-        // $customer= Customer::fistWhere('id',$request->id);
+        $this->validateRequest($request);
+
          Customer::firstWhere('id_no',$request->id_no)?->update($request->all());
         return redirect (route('customers.index'));
         //$customer->update([$request->all()->except('id')]);

@@ -53,7 +53,8 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+
+    private function validateRequest(Request $request)
     {
          $request->validate([
             'type'=>'required',
@@ -67,6 +68,11 @@ class ItemController extends Controller
             'tax_group_id'=>'required',
 
          ]);
+    }
+
+    public function store(Request $request)
+    {
+        $this->validateRequest($request);
         Item::create($request->all());
             return redirect(route('items.index'));
     }
@@ -89,6 +95,7 @@ class ItemController extends Controller
      */
     public function update(Request $request, string $id)
     {
+           $this->validateRequest($request);
        Item::firstWhere('id',$request->id)?->update($request->all());
         return redirect (route('items.index'));
     }
