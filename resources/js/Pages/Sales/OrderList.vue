@@ -15,6 +15,9 @@ import axios from 'axios';
 import moment from 'moment';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import MobileTable from '@/Components/MobileTable.vue'
+import ItemList from '@/Components/ItemList.vue';
+import { XMarkIcon } from '@heroicons/vue/16/solid'
 
 const totalQuantity = computed(() => {
   return orderLines.value.reduce((total, orderLine) => total + orderLine.quantity, 0);
@@ -265,6 +268,74 @@ const showUpdateModal=(order)=>{
 
     showModal.value=true
 }
+
+const shoppingCart = ref([]);
+
+const totalAmount = computed(() => {
+  return shoppingCart.value.reduce((total, cartItem) => {
+    return total + cartItem.quantity * cartItem.unit_price;
+  }, 0).toFixed(2); // Ensure two decimal places
+});
+
+// Emitting events
+const addToCartHandler = (item) => {
+  updateShoppingCart(item);
+};
+
+// Method to update the shopping cart
+const updateShoppingCart = (item) => {
+  const existingCartItemIndex = shoppingCart.value.findIndex(cartItem => cartItem.id === item.id);
+
+  if (existingCartItemIndex === -1) {
+    // Item is not in the cart, add it with quantity 1
+    shoppingCart.value.push({
+      id: item.id,
+      code: item.code,
+      description: item.description,
+      unit_price: parseFloat(item.unit_price), // Convert unit_price to a number
+      quantity: 1,
+    });
+  } else {
+    // Item is already in the cart, increment the quantity
+    shoppingCart.value[existingCartItemIndex].quantity += 1;
+  }
+
+  // Recalculate the total amount
+  calculateTotalAmount();
+};
+
+// Computed properties
+const calculateLineAmount = (cartItem) => {
+  return (cartItem.quantity * cartItem.unit_price).toFixed(2); // Ensure two decimal places
+};
+
+const removeFromCart = (item) => {
+  const existingCartItemIndex = shoppingCart.value.findIndex(cartItem => cartItem.id === item.id);
+
+  if (existingCartItemIndex !== -1) {
+    const cartItem = shoppingCart.value[existingCartItemIndex];
+
+    if (cartItem.quantity > 1) {
+      // Decrease quantity if greater than 1
+      cartItem.quantity -= 1;
+    } else {
+      // Remove from cart if quantity is 1
+      shoppingCart.value.splice(existingCartItemIndex, 1);
+    }
+
+    // Recalculate the total amount
+    calculateTotalAmount();
+  }
+};
+
+const updateCart = (item) => {
+  // Ensure quantity and unit_price are positive numbers
+  item.quantity = Math.max(0, item.quantity);
+  item.unit_price = Math.max(0, item.unit_price);
+
+  // Recalculate the line amount and total amount
+  calculateTotalAmount();
+};
 </script>
 
 
@@ -273,162 +344,97 @@ const showUpdateModal=(order)=>{
 
     <AuthenticatedLayout @add="showModal=true">
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Sales Orders</h2>
+            <h2 class="text-xl font-semibold leading-tight text-center text-gray-800">Sales Orders</h2>
         </template>
 
-        <div class="py-6">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-
-                        <!--stats bar -->
-
-                        <div>
-                            <Toolbar>
-                                <template #start>
-                                    <!-- <Button label="New" icon="pi pi-plus" class="mr-2" />
-                                        <Button label="Upload" icon="pi pi-upload" class="p-button-success" /> -->
-                                        <!-- <i class="mr-2 pi pi-bars p-toolbar-separator" /> -->
-                                        <!-- <SplitButton label="Save" icon="pi pi-check" :model="orders" class="p-button-warning"></SplitButton> -->
-                                        <Button
-                                        label="Add"
-                                        icon="pi pi-plus"
-
-                                        severity="success"
-                                        @click="showCreateModal()"
-                                        rounded
-                                        ></Button>
-                                    </template>
-                                    <template #center>
-                                        <div>
-                                            <Pagination :links="orders.meta.links" />
-                                        </div>
-                                        <!-- <Modal :show="showModal.value">
-                                            <FilterPane :propsData="columnListing" />
-                                        </Modal> -->
-                                        <!-- <FilterPane :propsData="columnListing" /> -->
-
-                                    </template>
-
-                                    <template #end>
-
-
-                                        <!-- <a :href="route('orderPostingGroups.download')" class="">
-                                            <Button icon="pi pi-download" severity="primary" text raised rounded label="orders"/>
-                                        </a> -->
-
-
-
-
-                                        <SearchBox :model="route('salesOrder.index')" />
-                                    </template>
-                                </Toolbar>
-
-                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-
-                                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-
-                                            <tr class="bg-slate-300">
-                                                <th scope="col" class="px-6 py-3">
-                                                    Order No.
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Customer No.
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Customer Name
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    External Document No.
-                                                </th>
-
-                                                <th scope="col" class="px-6 py-3 text-center">
-                                                    Posting Date
-                                                </th>
-                                                <th scope="col" class="px-6 py-3 text-center">
-                                                    Value
-                                                </th>
-                                                <th scope="col" class="px-6 py-3 text-center">
-                                                    Status
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Actions
-                                                </th>
-
-
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="order in orders.data" :key="order.id"
-                                            class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-
-                                            <td class="px-3 py-2 text-xs">
-                                                {{ order.document_no }}
-                                            </td>
-
-                                            <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                {{ order.customer.id }}
-                                            </td>
-                                            <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                {{ order.customer.customer_name}}
-                                            </td>
-                                            <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                {{ order.ext_doc_no}}
-                                            </td>
-
-                                            <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                {{ order.posting_date }}
-                                            </td>
-                                            <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                {{ order.value }}
-                                            </td>
-                                            <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                {{ order.status }}
-                                            </td>
-
-
-                                            <td>
-                                                <div class="flex flex-row">
-                                                    <!-- <Drop  :drop-route="route('salesOrder.destroy'),{'order':order.id})"/> -->
-                                                    <Button
-                                                    icon="pi pi-pencil"
-                                                    severity="info"
-                                                    text
-
-
-                                                    @click="showUpdateModal(order)"
-                                                    />
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <Toolbar>
-                                <template #center>
-                                    <div >
-                                        <Pagination :links="orders.meta.links" />
-                                    </div>
-                                </template>
-                            </Toolbar>
-
-
-                        </div>
-
-
-
-
-                        <!--end of stats bar-->
-
-                    </div>
-                </div>
+        <div class="grid m-3 border-t-2 sm:grid-cols-1 md:grid-cols-3">
+            <div>
+                <ItemList :items="items.data" @addToCart="addToCartHandler"/>
             </div>
+             <!--cart-->
+             <div>
+                <h2>Shopping Cart</h2>
+                <table class="text-xs">
+                <thead>
+                    <tr>
+                    <th class="p-1 mx-2">Code</th>
+                    <th class="p-1 mx-2">Description</th>
+                    <th class="p-1 mx-2">Quantity</th>
+                    <th class="p-1 mx-2">Unit Price</th>
+                    <th class="p-1 mx-2">Line Amount</th>
+                    <th class="p-1 mx-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(cartItem, index) in shoppingCart" :key="index" class="-my-1">
+                    <td class="mx-2">{{ cartItem.code }}</td>
+                    <td class="mx-2">{{ cartItem.description }}</td>
+                    <td class="mx-2">
+                        <input type="number" v-model="cartItem.quantity" class="w-12 text-xs text-blue-500 bg-transparent border-none outline-none "  @input="updateCart(item)" />
+                    </td>
+                    <td class="mx-2">
+                        <input type="number" v-model="cartItem.unit_price" class="w-24 text-xs text-blue-500 bg-transparent border-none outline-none "  @input="updateCart(item)" />
+                    </td>
+                    <td class="mx-2"><strong>{{ calculateLineAmount(cartItem) }}</strong></td>
+                    <td class="mx-2">
+                        <XMarkIcon @click="removeFromCart(cartItem)" class="w-5 h-5" />
+                    </td>
+                    </tr>
+                    <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><strong>{{ totalAmount }}</strong></td>
+                    <td></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+            <div v-if="orders.data.length>0">
+
+                 <div class="p-3 mt-2 text-xs text-center bg-gray-300 rounded-lg shadow-sm " >
+                    <Toolbar class="bg-gray-300 ">
+                    <template #center>
+                      <div class="flex flex-row items-center justify-between">
+                        <SearchBox :model="route('salesOrder.index')" class="bg-gray-300"/>
+                     <Button icon="pi pi-download" severity="success" text rounded aria-label="Favorite" class="w-3 h-3 p-1 text-xs" />
+                      </div>
+
+                    </template>
+                    </Toolbar>
+                     <table>
+                        <thead>
+                            <th class="p-1 font-bold text-center">Order No</th>
+                            <!-- <th class="p-1 font-bold text-center">External Ref</th> -->
+                            <th class="p-1 font-bold text-center">Posting Date</th>
+                            <th class="p-1 font-bold text-center">Status</th>
+                            <th class="p-1 font-bold text-center">Customer</th>
+                            <th class="p-1 font-bold text-center">Value</th>
+                            <th class="p-1 font-bold text-center">Actions</th>
+                        </thead>
+                        <tbody class="px-1">
+                            <tr v-for="order in orders.data" :key="order.id" class="px-2 rounded-md hover:bg-slate-400 hover:text-white">
+                              <td>{{order.document_no}}</td>
+                              <!-- <td>{{order.ext_doc_no}}</td> -->
+                              <td>{{order.posting_date}}</td>
+                              <td>{{order.status}}</td>
+                              <td>{{order.customer.customer_name}}</td>
+                              <td>{{formatNumber(order.value)}}</td>
+                              <td class="flex flex-row">
+                                 <Button icon="pi pi-pencil" severity="help" text rounded aria-label="Favorite" class="w-3 h-3 p-1 text-xs" />
+                                    <Button icon="pi pi-times" severity="danger" text rounded aria-label="delete" class="w-3 h-3 p-1 text-xs" />
+                              </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <Pagination class="w-full text-center" :links="orders.meta.links"/>
+                 </div>
+            </div>
+            <div v-else> No Orders to display</div>
         </div>
+
+
 
         <Modal :show="showModal" @close="showModal=false" :max-width="'3xl'" :closeable="true" >
 

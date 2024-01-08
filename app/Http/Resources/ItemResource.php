@@ -25,6 +25,7 @@ class ItemResource extends JsonResource
             'unit_cost'=>$this->unit_cost,
             'base_uom'=>$this->base_uom,
             'sales_uom'=>$this->sales_uom,
+            'tax_group'=>$this->tax_posting_group->code,
             'posting_group'=>ItemPostingGroup::find($this->item_posting_group_id)->code,
             'blocked'=>$this->blocked?'Yes':'No',
 

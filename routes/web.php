@@ -83,6 +83,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('taxPostingGroups',TaxPostingGroupController::class);
     Route::resource('busPostingGroups',BusPostingGroupController::class);
 
+    Route::get('table',fn()=>inertia('List'));
+
     // routes/web.php
 
 

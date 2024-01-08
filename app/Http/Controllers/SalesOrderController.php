@@ -47,7 +47,9 @@ public function convertImageToDataURL()
             $orders = SalesOrderResource::collection($searchService
                             //   ->withSum(['salesOrderLines'=>'amount'])
                               ->with(['customer'])
-                            ->search()->paginate($rows));
+                            ->search()->latest()->paginate($rows));
+            $headings=array_keys(SalesOrder::first()->toArray());
+            // dd($headings);
 
         $customers=Customer::select('customer_name','id','bus_posting_group_id','tax_posting_group_id')->whereNot('blocked')->get();
         $items=ItemResource::collection(Item::whereNot('blocked')->get());
@@ -56,7 +58,7 @@ public function convertImageToDataURL()
         $lastSerialNo=MyServices::incrementSerialNumber(NoSeries::first()->last_no_used);
 
 
-        return inertia('Sales/OrderList',compact('orders','customers','items','lastSerialNo','companyInfo'));
+        return inertia('Sales/OrderList',compact('orders','customers','items','lastSerialNo','companyInfo','headings'));
     }
 
     /**
