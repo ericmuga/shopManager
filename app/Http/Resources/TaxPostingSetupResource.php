@@ -14,6 +14,14 @@ class TaxPostingSetupResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+
+             'id'=>$this->id,
+             'itemTaxGroup'=>$this->whenLoaded('itemTaxGroup'),
+             'busTaxGroup'=>$this->whenLoaded('busTaxGroup'),
+             'tax_identifier'=>$this->tax_identifier,
+             'tax_rate'=>$this->tax_rate,
+        ];
     }
+
 }

@@ -10,7 +10,7 @@ use App\Http\Controllers\{BusPostingGroupController, CustomerController,
     NoSeriesController,
     // OrderController,
                             // OrderLineController,
-                            ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController};
+                            ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController, TaxPostingSetupController};
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +20,7 @@ use App\Models\Customer;
 use Glhd\Gretel\View\Breadcrumbs;
 use App\Http\Controllers\SalesController;
 use App\Models\Item;
+use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('administration',function(){return inertia('Administration/Index');})->name('administration.index');
     Route::get('administration/posting-group',function(){return inertia('Administration/PostingGroups');})->name('administration.posting-groups');
+
+    /** Tax Posting setups */
+
+    Route::resource('taxPostingSetups',TaxPostingSetupController::class);
+
 
     Route::resource('items', ItemController::class)->breadcrumbs([
                                                                             'index' => 'Items',

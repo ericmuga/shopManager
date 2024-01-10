@@ -27,6 +27,7 @@ const subMenuOpen = ref({
   sales: false,
   purchases: false,
   inventory:false,
+  administration:false,
   // Add more submenu states as needed
 });
 
@@ -75,9 +76,9 @@ const toggleSubMenu = (menuKey) => {
           <span v-else class="ml-2 text-white">&#9654;</span>
         </div>
         <div v-show="subMenuOpen['sales']">
-        <div class="py-2 pl-8 text-black" ><Link :href="route('sales.summary')" :active="route().current('sales.summary')">Summary </Link></div>
-        <div class="py-2 pl-8 text-black" ><Link :href="route('salesOrder.index')" :active="route().current('salesOrder.index')">Orders </Link></div>
-        <div class="py-2 pl-8 text-black" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Customers </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('sales.summary')" :active="route().current('sales.summary')">Summary </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('salesOrder.index')" :active="route().current('salesOrder.index')">Orders </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Customers </Link></div>
           <!-- <div class="py-2 pl-8 cursor-pointer">Submenu 2</div> -->
         </div>
 
@@ -87,21 +88,38 @@ const toggleSubMenu = (menuKey) => {
           <span v-else class="ml-2 text-white">&#9654;</span>
         </div>
         <div v-show="subMenuOpen['purchases']">
-        <div class="py-2 pl-8 text-black cursor-pointer" ><Link :href="route('salesOrder.index')" :active="route().current('salesOrder.index')">Orders </Link></div>
-        <div class="py-2 pl-8 text-black cursor-pointer" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Vendors </Link></div>
-          <!-- <div class="py-2 pl-8 cursor-pointer">Submenu 2</div> -->
+            <div class="py-2 pl-8 text-black cursor-pointer" ><Link :href="route('salesOrder.index')" :active="route().current('salesOrder.index')">Orders </Link></div>
+            <div class="py-2 pl-8 text-black cursor-pointer" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Vendors </Link></div>
         </div>
+
+
 
         <div @click="toggleSubMenu('inventory')" class="px-4 py-2 cursor-pointer">
           <span class="text-black">Inventory</span>
           <span v-if="subMenuOpen['inventory']" class="ml-2 text-white">&#9660;</span>
-    <span v-else class="ml-2 text-white">&#9654;</span>
+          <span v-else class="ml-2 text-white">&#9654;</span>
         </div>
         <div v-show="subMenuOpen['inventory']">
-        <div class="py-2 pl-8 text-black" ><Link :href="route('items.index')" :active="route().current('items.index')">Items </Link></div>
-        <div class="py-2 pl-8 text-black" ><Link :href="route('itemPostingGroups.index')" :active="route().current('customers.index')">Setups </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('items.index')" :active="route().current('items.index')">Items </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('itemPostingGroups.index')" :active="route().current('customers.index')">Setups </Link></div>
+        </div>
+
+
+        <div @click="toggleSubMenu('administration')" class="px-4 py-2 cursor-pointer">
+          <span class="text-black">Administration</span>
+          <span v-if="subMenuOpen['administration']" class="ml-2 text-white">&#9660;</span>
+          <span v-else class="ml-2 text-white">&#9654;</span>
+        </div>
+        <div v-show="subMenuOpen['administration']">
+            <div class="py-2 pl-8 text-black" ><Link :href="route('administration.index')" :active="route().current('administration.index')">Administration </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('administration.posting-groups')" :active="route().current('administration.posting-groups')">Posting Groups </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('taxPostingSetups.index')" :active="route().current('taxPostingSetups.index')">Tax Posting Setup </Link></div>
+            <!-- <div class="py-2 pl-8 text-black" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Customers </Link></div> -->
           <!-- <div class="py-2 pl-8 cursor-pointer">Submenu 2</div> -->
         </div>
+
+
+
 
 
         <div class="pt-4 pb-1 border-t border-gray-200">

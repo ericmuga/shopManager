@@ -50,6 +50,7 @@ createInertiaApp({
             .component('Drop',Drop)
             .component('Calendar',Calendar)
             .component('Swal',Swal)
+
             .mount(el);
     },
     progress: {
