@@ -1,6 +1,10 @@
 <template>
   <div >
     <!-- Search input -->
+    <div v-if="loading">Loading...</div>
+    <div v-else>
+
+
     <div class="p-3 mb-4 text-center">
       <input v-model="searchTerm" type="text" placeholder="Search" class="p-2 border border-gray-300 rounded" />
     </div>
@@ -35,19 +39,38 @@
   </div>
 
    </div>
+   </div>
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits,watch } from 'vue';
+import { ref, defineProps, defineEmits,watch,onMounted } from 'vue';
 import { debounce } from 'lodash';
 import { HeartIcon } from '@heroicons/vue/16/solid';
 
 // Props
 const props = defineProps(['items']);
+const filteredItems= ref(null);
+
 
 // State
 const searchTerm = ref('');
-const filteredItems = ref(props.items);
+
+const loading = ref(true);
+const data = ref(null);
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(route('items.list'));
+    // console.log(response.data.items);
+    filteredItems.value=response.data.items
+    // console.log(filteredItems.value)
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    // Handle errors if needed
+  } finally {
+    loading.value = false;
+  }
+});
 
 // Emitting events
 const emit = defineEmits();

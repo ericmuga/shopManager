@@ -7,10 +7,17 @@ use App\Http\Controllers\{BusPostingGroupController, CustomerController,
                             InvoiceLineController,
                             ItemEntryController,
                             ItemPostingGroupController,
-    NoSeriesController,
-    // OrderController,
-                            // OrderLineController,
-                            ProfileController, PurchaseOrderController, SalesOrderController, TaxPostingGroupController, TaxPostingSetupController};
+                           NoSeriesController,
+                           PermissionController,
+                           RoleController,
+                            ProfileController,
+                            PurchaseOrderController,
+                            SalesOrderController,
+                            TaxPostingGroupController,
+                            TaxPostingSetupController,
+                            UserController,
+                        };
+
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +61,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+     Route::resource('permissions',PermissionController::class);
+      Route::get('permissionDownload',[PermissionController::class,'download'])->name('permissions.download');
+      Route::resource('roles',RoleController::class);
+      Route::get('roleDownload',[RoleController::class,'download'])->name('roles.download');
+      Route::resource('users', UserController::class);
+      Route::get('userDownload',[UserController::class,'download'])->name('users.download');
+
+
     Route::resource('customers', CustomerController::class)->breadcrumbs([
                                                                             'index' => 'Customers',
                                                                             'create' => 'New Customer',
@@ -90,6 +105,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('busPostingGroups',BusPostingGroupController::class);
 
     Route::get('table',fn()=>inertia('List'));
+
+    Route::get('itemList',[ItemController::class ,'list'])->name('items.list');
 
     // routes/web.php
 

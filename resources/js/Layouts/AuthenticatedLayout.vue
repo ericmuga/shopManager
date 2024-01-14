@@ -77,7 +77,7 @@ const toggleSubMenu = (menuKey) => {
         </div>
         <div v-show="subMenuOpen['sales']">
             <div class="py-2 pl-8 text-black" ><Link :href="route('sales.summary')" :active="route().current('sales.summary')">Summary </Link></div>
-            <div class="py-2 pl-8 text-black" ><Link :href="route('salesOrder.index')" :active="route().current('salesOrder.index')">Orders </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('salesOrder.index')" :active="route().current('salesOrder.index')">Quotes & Orders </Link></div>
             <div class="py-2 pl-8 text-black" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Customers </Link></div>
           <!-- <div class="py-2 pl-8 cursor-pointer">Submenu 2</div> -->
         </div>
@@ -111,12 +111,13 @@ const toggleSubMenu = (menuKey) => {
           <span v-else class="ml-2 text-white">&#9654;</span>
         </div>
         <div v-show="subMenuOpen['administration']">
-            <div class="py-2 pl-8 text-black" ><Link :href="route('administration.index')" :active="route().current('administration.index')">Administration </Link></div>
-            <div class="py-2 pl-8 text-black" ><Link :href="route('administration.posting-groups')" :active="route().current('administration.posting-groups')">Posting Groups </Link></div>
-            <div class="py-2 pl-8 text-black" ><Link :href="route('taxPostingSetups.index')" :active="route().current('taxPostingSetups.index')">Tax Posting Setup </Link></div>
-            <!-- <div class="py-2 pl-8 text-black" ><Link :href="route('customers.index')" :active="route().current('customers.index')">Customers </Link></div> -->
-          <!-- <div class="py-2 pl-8 cursor-pointer">Submenu 2</div> -->
-        </div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('administration.index')" :active="route().current('administration.index')" class="block px-2 py-1 rounded hover:bg-gray-600 ">Setups</Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('administration.posting-groups')" :active="route().current('administration.posting-groups')" class="block px-2 py-1 rounded hover:bg-gray-600 ">Posting Groups </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('taxPostingSetups.index')" :active="route().current('taxPostingSetups.index')"  class="block px-2 py-1 rounded hover:bg-gray-600 ">Tax Posting Setup </Link></div>
+            <div class="py-2 pl-8 text-black"><Link :href="route('users.index')" :active="route().current('users.index')" class="block px-2 py-1 rounded hover:bg-gray-600 ">Users</Link></div>
+            <div class="py-2 pl-8 text-black"><Link :href="route('permissions.index')" :active="route().current('permissions.index')"  class="block px-2 py-1 rounded hover:bg-gray-600 ">Permissions</Link></div>
+            <div class="py-2 pl-8 text-black"><Link :href="route('roles.index')" :active="route().current('roles.index')"  class="block px-2 py-1 rounded hover:bg-gray-600 ">Roles</Link></div>
+            </div>
 
 
 

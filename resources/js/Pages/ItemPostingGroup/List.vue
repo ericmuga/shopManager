@@ -14,6 +14,7 @@ import {watch, ref} from 'vue';
 const form= useForm({
    code:'',
    description:'',
+   no_series_code:'',
    id:null
 })
 
@@ -47,6 +48,7 @@ let mode= { state: 'Create' };
 
 const props=  defineProps({
        posting_groups:Object,
+       no_series:Object,
     //    tax_groups:Object,
   })
 
@@ -66,6 +68,7 @@ const showUpdateModal=(posting_group)=>{
     mode.state='Update'
     form.code=posting_group.code
     form.description=posting_group.description
+    form.no_series_code=posting_group.no_series_code
     form.id=posting_group.id
 
     showModal.value=true
@@ -229,6 +232,13 @@ const showUpdateModal=(posting_group)=>{
 
            placeholder="Description"
            v-model="form.description"
+
+        />
+
+        <InputText
+
+           placeholder="No. Series Code"
+           v-model="form.no_series_code"
 
         />
         <InputText

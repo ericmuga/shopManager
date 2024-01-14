@@ -21,7 +21,7 @@ class NoSeriesResource extends JsonResource
             'last_no_used'=>$this->last_no_used,
             'last_date_used'=>Carbon::parse($this->last_date_used)->toDateString(),
             'last_no_used'=>$this->last_no_used,
-            'document_type'=>$this->document_type,
+            'type'=>$this->type,
             'characters'=>$this->characters,
         ];
     }

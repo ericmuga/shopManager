@@ -16,8 +16,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sales_orders', function (Blueprint $table) {
+        Schema::create('sales_header', function (Blueprint $table) {
             $table->id();
+            $table->string('document_type')->default('order');
             $table->foreignIdFor(Customer::class);
             $table->string('document_no');
             $table->foreignIdFor(User::class);
@@ -28,10 +29,12 @@ return new class extends Migration
             $table->timestamps();
         });
 
-          Schema::create('sales_invoices', function (Blueprint $table) {
+          Schema::create('sales_invoice_header', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Customer::class);
             $table->string('document_no');
+            $table->string('order_no')->nullable();
+            $table->string('quote_no')->nullable();
             $table->foreignIdFor(User::class);
             $table->date('posting_date');
             $table->string('status');
@@ -39,12 +42,28 @@ return new class extends Migration
             $table->string('tax_uuid');
             $table->foreignIdFor(CustomerEntry::class);
             $table->timestamps();
-        });
+          });
 
-        Schema::create('sales_cr_notes', function (Blueprint $table) {
+           Schema::create('sales_shipment_header', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Customer::class);
             $table->string('document_no');
+            $table->string('order_no')->nullable();
+            $table->string('quote_no')->nullable();
+            $table->foreignIdFor(User::class);
+            $table->date('posting_date');
+            $table->string('status');
+            $table->string('ext_doc_no');
+            $table->string('tax_uuid');
+            $table->timestamps();
+          });
+
+        Schema::create('sales_cr_header', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Customer::class);
+            $table->string('document_no');
+            $table->string('order_no')->nullable();
+            $table->string('quote_no')->nullable();
             $table->foreignIdFor(User::class);
             $table->date('posting_date');
             $table->string('status');
@@ -54,7 +73,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('purchases_orders', function (Blueprint $table) {
+
+// ----------------------------Purchase headers ------------------------------------------//
+        Schema::create('purchase_header', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Vendor::class);
             $table->foreignIdFor(User::class);
@@ -62,14 +83,29 @@ return new class extends Migration
             $table->string('document_no');
             $table->string('status');
             $table->string('ext_doc_no');
-           $table->string('tax_uuid');
+            $table->string('tax_uuid');
             $table->timestamps();
         });
 
-          Schema::create('purchases_invoices', function (Blueprint $table) {
+         Schema::create('purchase_rct_header', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Vendor::class);
+            $table->foreignIdFor(User::class);
+            $table->date('posting_date');
+            $table->string('document_no');;
+            $table->string('order_no');
+            $table->string('status');
+            $table->string('ext_doc_no');
+            $table->string('tax_uuid');
+            $table->timestamps();
+        });
+
+          Schema::create('purchase_invoice_header', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Vendor::class);
             $table->string('document_no');
+            $table->string('order_no')->nullable();
+            $table->string('quote_no')->nullable();
             $table->foreignIdFor(User::class);
             $table->date('posting_date');
             $table->string('status');
@@ -78,7 +114,7 @@ return new class extends Migration
             $table->foreignIdFor(VendorEntry::class);
             $table->timestamps();
         });
-         Schema::create('purchases_cr_notes', function (Blueprint $table) {
+         Schema::create('purchase_cr_header', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Vendor::class);
             $table->string('document_no');
@@ -98,11 +134,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sales_orders');
-        Schema::dropIfExists('purchase_orders');
-        Schema::dropIfExists('sales_invoices');
-        Schema::dropIfExists('purchase_invoices');
-        Schema::dropIfExists('sales_cr_notes');
-        Schema::dropIfExists('purchase_cr_notes');
+        Schema::dropIfExists('sales_header');
+        Schema::dropIfExists('sales_shipment_header');
+        Schema::dropIfExists('sales_invoice_header');
+        Schema::dropIfExists('sales_cr_header');
+
+        Schema::dropIfExists('purchase_header');
+        Schema::dropIfExists('purchase_rct_header');
+        Schema::dropIfExists('purchase_invoice_header');
+        Schema::dropIfExists('purchase_cr_header');
     }
 };

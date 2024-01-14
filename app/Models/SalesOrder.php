@@ -9,7 +9,7 @@ class SalesOrder extends Model
 {
     use HasFactory;
 
-    protected $table='sales_orders';
+    protected $table='sales_header';
 
     protected $guarded=['id'];
     public function salesOrderLines()

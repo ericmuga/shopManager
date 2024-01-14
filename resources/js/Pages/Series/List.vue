@@ -258,7 +258,7 @@ const showUpdateModal=(item)=>{
             <Dropdown
              id="description"
              v-model="form.document_type"
-             :options="['Sales Invoice','Purchase Invoice','Purchase Order','Sales Order','Purchase Quote','Sales Quote']"
+             :options="['Sales Invoice','Purchase Invoice','Purchase Order','Sales Order','Purchase Quote','Sales Quote','Item','Customer','Vendor']"
              placeholder="Document Type"
              filter
              />

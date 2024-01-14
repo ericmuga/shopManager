@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreNoSeriesRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreNoSeriesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+          return auth()->user()->hasRole('admin');
     }
 
     /**
@@ -22,7 +23,11 @@ class StoreNoSeriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'series_code'=>'required',
+            'type'=>'required',
+            'characters'=>'required',
+            'last_no_used'=>'required',
+            'last_date_used'=>'required',
         ];
     }
 }

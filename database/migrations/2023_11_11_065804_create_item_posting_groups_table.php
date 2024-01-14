@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('item_posting_groups', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
+            $table->string('no_series_code');
             $table->string('description');
             $table->timestamps();
         });

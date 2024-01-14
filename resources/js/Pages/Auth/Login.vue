@@ -85,16 +85,16 @@ const submit = () => {
                     Forgot your password?
                 </Link>
 
-                <Button class="ml-4 bg-cyan-800" 
-                       :class="{ 'opacity-25': form.processing }" 
-                       :disabled="form.processing" 
-                       
+                <Button class="ml-4 bg-cyan-800"
+                       :class="{ 'opacity-25': form.processing }"
+                       :disabled="form.processing"
+
                        type="submit"
                        label="Log in"
                        />
 
-                
-                
+
+
             </div>
         </form>
     </GuestLayout>

@@ -18,100 +18,47 @@ import 'jspdf-autotable';
 import MobileTable from '@/Components/MobileTable.vue'
 import ItemList from '@/Components/ItemList.vue';
 import { XMarkIcon } from '@heroicons/vue/16/solid'
+import { usePdfGenerator } from '@/Composables/createPdfComposable.js';
+const orderLines = ref([
+  {
+    itemName: '',
+    quantity: 0,
+    price: 0,
+    description: '',
+  },
+]);
+
+
+const props=  defineProps({
+    orders:Object,
+    customers:Object,
+    items:Object,
+    lastSerialNo:String,
+    companyInfo:Object,
+})
+
+
+const currentDate = moment().format('DD/MM/YYYY');
+
+
+const { generatePDF } = usePdfGenerator(orderLines, props, currentDate);
+
+
+
+const addOrderLine = () => {
+  orderLines.value.push({
+    itemName: '',
+    quantity: 0,
+    price: 0,
+  });
+};
+
 
 const totalQuantity = computed(() => {
   return orderLines.value.reduce((total, orderLine) => total + orderLine.quantity, 0);
 });
 
-const currentDate = moment().format('DD/MM/YYYY');
 
-const generatePDF = async () => {
-
-
-  const lineItems = orderLines.value;
-  try {
-    const response = await axios.get(route('convertLogo'));
-    const logo = response.data.dataUrl;
-
-    const totalRow = ['', '', 'Total Amount', ` Ksh.${formatNumber(calculateTotal(lineItems))}`];
-    const vatAmountRow = ['', '', 'VAT Amount', `Ksh.${formatNumber(calculateVATAmount(lineItems))}`];
-
-    const grandTotalRow = ['', '', 'Amt. Inc VAT', `Ksh.${formatNumber(calculateTotal(lineItems)+calculateVATAmount(lineItems))}`];
-
-    const doc = new jsPDF();
-
-    // Add company information with reduced font size
-   const companyInfoText = [
-  `Email: ${props.companyInfo.email}`,
-  `Phone: ${props.companyInfo.phone}`,
-  `PIN: ${props.companyInfo.pin}`,
-];
-
-// Set the font size for company information
-doc.setFontSize(8);
-
-// Add each line of company information
-
-
-    // Add the company information at the top right corner
-    companyInfoText.forEach((info, index) => {
-      doc.text(info.text, doc.internal.pageSize.width - 10, 10 + index * 10, { align: 'right', fontSize: info.fontSize });
-    });
-
-    // Add Batian Optical Centre and Sales Invoice headings
-    doc.text('Batian Optical Centre', doc.internal.pageSize.width / 2, 20, { align: 'center' });
-    doc.text('Sales Invoice', doc.internal.pageSize.width / 2, 30, { align: 'center' });
-
-    // Add date and serial number with reduced font size
-    doc.text(`Date: ${currentDate}`, 10, 20, { fontSize: 8 });
-    doc.text(`Invoice No.: ${props.lastSerialNo}`, 10, 30, { fontSize: 8 });
-
-    // Calculate the width and height for the centered logo
-    const logoWidth = 15; // Adjust as needed
-    const logoHeight = (logoWidth * 50) / 50; // Maintain the aspect ratio
-    const xPosition = (doc.internal.pageSize.width - logoWidth) / 2;
-    const yPosition = 40; // Adjust as needed
-
-    // Add the logo in the center
-    doc.addImage(logo, 'JPEG', xPosition, yPosition, logoWidth, logoHeight);
-
-    const columns = ['Item Name', 'Quantity', 'Unit Price', 'Total Amount'];
-    const tableBody = lineItems.map(item => [item.itemName + '-' + item.description, item.quantity, `Ksh.${item.price}`, `Ksh.${formatNumber(item.quantity * item.price)}`]);
-    tableBody.push(vatAmountRow, totalRow);
-    const rows = [columns, ...tableBody];
-
-
-    // Adjust startY to position the table below the logo and company information
-    const tableYPosition = yPosition + logoHeight + 10; // Adjust as needed
-
-// Set the font size for the table
-const tableFontSize = 8; // Adjust as needed
-
-doc.autoTable({
-  head: [columns],
-  body: tableBody,
-  theme: 'grid',
-  startY: tableYPosition,
-  margin: { top: 10 },
-  styles: {
-    fontSize: tableFontSize,
-  },
-});
-
-    // Add the totalRow and vatAmountRow manually
-    const totalRowYPosition = tableYPosition + (tableBody.length + 1) * 10; // Adjust as needed
-    const vatAmountRowYPosition = totalRowYPosition + 10; // Adjust as needed
-
-    // doc.text(totalRow[2], doc.internal.pageSize.width - 10, totalRowYPosition, { align: 'right', fontSize: 8 });
-    // doc.text(totalRow[3], doc.internal.pageSize.width - 10, totalRowYPosition + 10, { align: 'right', fontSize: 8 });
-    // doc.text(vatAmountRow[2], doc.internal.pageSize.width - 10, vatAmountRowYPosition, { align: 'right', fontSize: 8 });
-    // doc.text(vatAmountRow[3], doc.internal.pageSize.width - 10, vatAmountRowYPosition + 10, { align: 'right', fontSize: 8 });
-
-    doc.save('sales_invoice.pdf');
-  } catch (error) {
-    console.error('Error fetching image data URL', error);
-  }
-};
 
 
 const calculateTotal = (lineItems) => {
@@ -128,26 +75,12 @@ const calculateVATAmount = (lineItems) => {
   return (totalAmount * vatRate).toFixed(2);
 };
 
-const orderLines = ref([
-  {
-    itemName: '',
-    quantity: 0,
-    price: 0,
-    description: '',
-  },
-]);
+
 
 const formatNumber = (number) => {
   return new Intl.NumberFormat('en-US').format(number);
 };
 
-const addOrderLine = () => {
-  orderLines.value.push({
-    itemName: '',
-    quantity: 0,
-    price: 0,
-  });
-};
 
 
 
@@ -166,13 +99,6 @@ const addItem = (index) => {
 };
 
 
-const props=  defineProps({
-    orders:Object,
-    customers:Object,
-    items:Object,
-    lastSerialNo:String,
-    companyInfo:Object,
-})
 
 const form= useForm({
     posting_date:new Date(),
@@ -215,59 +141,6 @@ const orderTotal = computed(() => {
     return orderLines.value.reduce((total, line) => total + lineAmount(orderLines.value.indexOf(line)), 0);
 });
 
-
-const createOrUpdateorder=()=>{
-    if (mode.state=='Create')
-    form.post(route('salesOrder.store'),
-    { preserveScroll: true},
-
-    )
-    else
-    form.patch(route('salesOrder.update',form.id),
-    { preserveScroll: true,
-        onSuccess: () =>{
-            Swal.fire(`Order ${mode.state}d Successfully!`,'','success');
-
-
-        }
-    })
-    showModal.value=false;
-    form.reset();
-
-}
-
-
-let mode= { state: 'Create' };
-
-
-
-let showModal=ref(false);
-
-
-const showCreateModal=()=>{
-    form.reset();
-    mode.state='Create'
-
-    showModal.value=true
-
-}
-
-const showUpdateModal=(order)=>{
-
-    mode.state='Update'
-    // form.code=order.code
-    // form.description=order.description
-    // form.id=order.id
-    // form.posting_group_id=order.posting_group_id
-    // form.base_uom=order.base_uom
-    // form.sales_uom=order.sales_uom
-    // form.blocked=order.blocked
-    // form.unit_cost=order.unit_cost
-    // form.unit_price=order.unit_price
-
-
-    showModal.value=true
-}
 
 const shoppingCart = ref([]);
 

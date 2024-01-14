@@ -6,6 +6,8 @@ use App\Http\Resources\ItemPostingGroupResource;
 use Illuminate\Http\Request;
 use App\Services\SearchQueryService;
 use App\Models\ItemPostingGroup;
+use App\Models\NoSeries;
+
 class ItemPostingGroupController extends Controller
 {
     /**
@@ -30,13 +32,15 @@ class ItemPostingGroupController extends Controller
 
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], []);
 
+            $no_series= NoSeries::select('series_code')->where('type','item')->get();
+
             $posting_groups = ItemPostingGroupResource::collection($searchService
                             //   ->with(['confirmations']) // Example of eager loading related models
                             ->search()->paginate($rows));
 
 
 
-             return inertia('ItemPostingGroup/List',compact('posting_groups'));
+             return inertia('ItemPostingGroup/List',compact('posting_groups','no_series'));
     }
 
     /**

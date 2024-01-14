@@ -48,14 +48,16 @@ public function convertImageToDataURL()
                             //   ->withSum(['salesOrderLines'=>'amount'])
                               ->with(['customer'])
                             ->search()->latest()->paginate($rows));
-            $headings=array_keys(SalesOrder::first()->toArray());
+            $headings=SalesOrder::count()>0?array_keys(SalesOrder::first()->toArray()):[];
             // dd($headings);
 
         $customers=Customer::select('customer_name','id','bus_posting_group_id','tax_posting_group_id')->whereNot('blocked')->get();
         $items=ItemResource::collection(Item::whereNot('blocked')->get());
         $companyInfo=CompanySetup::first();
 
-        $lastSerialNo=MyServices::incrementSerialNumber(NoSeries::first()->last_no_used);
+        if (NoSeries::count()>0)
+          $lastSerialNo=MyServices::incrementSerialNumber(NoSeries::first()->last_no_used);
+        else return redirect(route('series.index'));
 
 
         return inertia('Sales/OrderList',compact('orders','customers','items','lastSerialNo','companyInfo','headings'));
@@ -68,6 +70,8 @@ public function convertImageToDataURL()
     {
         //
     }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -89,7 +93,6 @@ public function convertImageToDataURL()
             'status'=>'posted',
             'ext_doc_no'=>'',
             'tax_uuid'=>'',
-
            ]);
 
 
@@ -116,9 +119,22 @@ public function convertImageToDataURL()
                 'sales_order_id'=>$order->id,
 
             ]);
+
+
         }
 
         //create item lines
+        // Schema::create('item_entries', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('entry_type');
+        //     $table->date('posting_date');
+        //     $table->foreignIdFor(Item::class);
+        //     $table->string('document_no');
+        //     $table->string('ext_doc_no');
+        //     $table->morphs('documentable');
+        //     $table->timestamps();
+        // });
+
 
 
     }

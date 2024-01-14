@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('no_series', function (Blueprint $table) {
             $table->id();
             $table->string('series_code');
-            $table->string('document_type');
+            $table->string('type');
             $table->date('last_date_used');
             $table->bigInteger('last_no_used');
             $table->tinyInteger('characters');

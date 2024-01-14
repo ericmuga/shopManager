@@ -70,6 +70,14 @@ class ItemController extends Controller
          ]);
     }
 
+
+    public function list()
+    {
+                $items=ItemResource::collection(Item::whereNot('blocked')->get());
+            return response()->json(compact('items'));
+    }
+
+
     public function store(Request $request)
     {
         $this->validateRequest($request);
