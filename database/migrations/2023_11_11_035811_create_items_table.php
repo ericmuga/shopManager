@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('type')->index();
             $table->string('code')->unique();
-            $table->string('barcode')->unique();
+            $table->string('barcode')->unique()->nullable();
             $table->string('description');
             $table->string('base_uom');
             $table->string('sales_uom');

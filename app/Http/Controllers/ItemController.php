@@ -43,7 +43,7 @@ class ItemController extends Controller
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], []);
 
             $items = ItemResource::collection($searchService
-                                            ->with(['posting_group.code']) // Example of eager loading related models
+                                            // ->with(['tax_posting_group.code','item_posting_group.code']) // Example of eager loading related models
                                             ->search()->paginate($rows));
 
 
@@ -68,7 +68,7 @@ class ItemController extends Controller
 
     public function store(StoreItemRequest $request)
     {
-        $this->validateRequest($request);
+        // $this->validateRequest($request);PItem
         Item::create($request->all());
         Cache::forget('items');
        return redirect(route('items.index'));

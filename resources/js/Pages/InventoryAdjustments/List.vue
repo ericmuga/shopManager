@@ -23,7 +23,7 @@ import Document from '@/Pages/InventoryAdjustments/Document.vue'
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-center text-gray-800">Inventory Adjustments</h2>
         </template>
-        <Modal  :show="showModal" @close="showModal=false">
+        <Modal  :show="showModal" @close="showModal=false" class="h-48">
         <Document/>
     </Modal>
     </AuthenticatedLayout>

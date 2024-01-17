@@ -20,6 +20,7 @@ const props=  defineProps({
 
 const form= useForm({
    code:'',
+   barcode:'',
    description:'',
    base_uom:'',
    sales_uom:'',
@@ -28,7 +29,7 @@ const form= useForm({
    item_posting_group_id:'',
    blocked:false,
    id:null,
-   tax_group_id:'',
+   tax_posting_group_id:'',
    type:','
 })
 
@@ -79,6 +80,7 @@ const showUpdateModal=(item)=>{
 
     mode.state='Update'
     form.code=item.code
+    form.barcode=item.barcode
     form.description=item.description
     form.id=item.id
     form.posting_group_id=item.item_posting_group_id
@@ -285,6 +287,11 @@ const showUpdateModal=(item)=>{
             <label for="code">Code</label>
             <InputError class="mt-2" :message="form.errors.code" />
         </span>
+         <span class="mt-4 p-float-label">
+            <InputText id="Barcode" v-model="form.barcode" class="w-15" />
+            <label for="Barcode">Barcode</label>
+            <InputError class="mt-2" :message="form.errors.barcode" />
+        </span>
        <span class="mt-4 p-float-label">
             <InputText id="description" v-model="form.description" />
             <label for="description">Description</label>
@@ -340,13 +347,13 @@ const showUpdateModal=(item)=>{
             <Dropdown
             filter
            placeholder="Tax Group"
-           v-model="form.tax_group_id"
+           v-model="form.tax_posting_group_id"
            :options="props.tax_groups.data"
            optionValue="id"
            optionLabel="code"
 
         />
-        <InputError class="mt-2" :message="form.errors.tax_group_id" />
+        <InputError class="mt-2" :message="form.errors.tax_posting_group_id" />
         </div>
 
 

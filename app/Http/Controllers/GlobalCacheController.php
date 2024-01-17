@@ -12,17 +12,18 @@ class GlobalCacheController extends Controller
 {
 
 
-public function getLocations()
+public function fetchLocations()
 {
+    // Cache::forget('locations');
     return Cache::remember('locations', now()->addDay(1), function () {
-        return LocationResource::collection(Location::where('blocked',false)); // Replace with your actual query
+        return LocationResource::collection(Location::whereNot('blocked')->get()); // Replace with your actual query
     });
 }
 
-public function getItems()
+public function fetchItems()
 {
     return Cache::remember('items', now()->addDay(1), function () {
-        return ItemResource::collection(Item::where('blocked',false));
+        return ItemResource::collection(Item::whereNot('blocked')->get());
     });
 }
 
