@@ -14,7 +14,7 @@ import {watch, ref} from 'vue';
 const form= useForm({
    code:'',
    description:'',
-   no_series_code:'',
+   no_series_id:'',
    id:null
 })
 
@@ -222,31 +222,35 @@ const showUpdateModal=(posting_group)=>{
 
 <div class="flex flex-col justify-center gap-3">
 
+         <div>
+            <InputText    placeholder="Code"  v-model="form.code"  />
+            <InputError class="mt-2" :message="form.code" />
+         </div>
+         <div>
+            <InputText placeholder="Description" v-model="form.description" />
+            <InputError class="mt-2" :message="form.description" />
+         </div>
+        <div>
+            <Dropdown
+                :options="props.no_series"
+                placeholder="No. Series Code"
+                v-model="form.no_series_id"
+                option-label="series_code"
+                option-value="id"
+            />
+        <InputError class="mt-2" :message="form.no_series_id" />
+        </div>
 
-        <InputText
-           placeholder="Code"
+        <div>
+            <InputText
+            hidden
+            placeholder="id"
+            v-model="form.id"
+            />
 
-           v-model="form.code"
-        />
-        <InputText
+        </div>
 
-           placeholder="Description"
-           v-model="form.description"
 
-        />
-
-        <InputText
-
-           placeholder="No. Series Code"
-           v-model="form.no_series_code"
-
-        />
-        <InputText
-           hidden
-           placeholder="id"
-           v-model="form.id"
-
-        />
 
 
         <Button

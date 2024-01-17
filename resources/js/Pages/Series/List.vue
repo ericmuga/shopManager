@@ -10,17 +10,18 @@ import Swal from 'sweetalert2'
 import Modal from '@/Components/Modal.vue'
 import Drop from '@/Components/Drop.vue'
 import { ref} from 'vue';
-
+import InputError from '@/Components/InputError.vue'
 
 const props=  defineProps({
     series:Object,
+
     // posting_groups:Object,
     // tax_groups:Object,
   })
 
 const form= useForm({
    series_code:'',
-   document_type:'',
+   type:'',
    last_no_used:'',
    last_date_used:'',
    characters:'',
@@ -38,6 +39,7 @@ const createOrUpdateitem=()=>{
                     { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`Series ${mode.state}d Successfully!`,'','success');
+                                      showModal.value=false;
                                     }
                     }
                    )
@@ -46,9 +48,10 @@ const createOrUpdateitem=()=>{
                 { preserveScroll: true,
                       onSuccess: () =>{ form.reset()
                                       Swal.fire(`Series ${mode.state}d Successfully!`,'','success');
+                                      showModal.value=false;
                                     }
                     })
-      showModal.value=false;
+
 
 
 }
@@ -73,7 +76,7 @@ const showUpdateModal=(item)=>{
 
     mode.state='Update'
     form.series_code=item.series_code
-    form.document_type=item.document_type
+    form.type=item.type
     form.last_date_used=item.last_date_used
     form.last_no_used=item.last_no_used
     form.characters=item.characters
@@ -182,7 +185,7 @@ const showUpdateModal=(item)=>{
                                                     </td>
 
                                                     <td class="px-3 py-2 text-xs font-bold text-center ">
-                                                        {{ item.document_type }}
+                                                        {{ item.type }}
                                                     </td>
                                                     <td class="px-3 py-2 text-xs font-bold text-center ">
                                                         {{ item.last_no_used}}
@@ -247,37 +250,41 @@ const showUpdateModal=(item)=>{
 
           <form  @submit.prevent="createOrUpdateitem()">
 
-<div class="grid grid-cols-2 gap-3">
+<div class="grid grid-cols-2 ">
 
 
-       <span class="mt-4 p-float-label">
+       <span class="mt-2 p-float-label">
             <InputText id="code" v-model="form.series_code" />
             <label for="code">Code</label>
+            <InputError class="mt-2" :message="form.errors.series_code" />
         </span>
        <span class="mt-4 p-float-label">
             <Dropdown
              id="description"
-             v-model="form.document_type"
+             v-model="form.type"
              :options="['Sales Invoice','Purchase Invoice','Purchase Order','Sales Order','Purchase Quote','Sales Quote','Item','Customer','Vendor']"
-             placeholder="Document Type"
+             placeholder="Type"
              filter
              />
-
+                <InputError class="mt-2" :message="form.errors.type" />
         </span>
 
-       <span class="mt-4 p-float-label ">
-            <input  type="date" id="last_date_used" v-model="form.last_date_used" />
+       <span class="flex flex-col mx-2 mt-2">
             <label for="last_date_used">Last Date Used</label>
+            <input  type="date" id="last_date_used" v-model="form.last_date_used" />
+            <InputError class="mt-2" :message="form.errors.last_date_used" />
         </span>
 
-         <span class="flex flex-col gap-6 mt-4">
-           <label for="last_no_used">Last No. Used</label>
+         <span class="flex flex-col mt-2">
+            <label for="last_no_used">Last No. Used</label>
             <InputText id="last_no_used" v-model="form.last_no_used" />
-
+            <InputError class="mt-2" :message="form.errors.last_no_used" />
         </span>
-         <span class="mt-4 p-float-label">
-            <InputNumber id="characters" v-model="form.characters" />
+
+        <span class="flex flex-col mt-2">
             <label for="characters">No. Of Characters</label>
+            <InputText id="characters" v-model="form.characters" />
+            <InputError class="mt-2" :message="form.errors.characters" />
         </span>
 
 
@@ -287,7 +294,8 @@ const showUpdateModal=(item)=>{
            v-model="form.id"
 
         />
-       <div class="space-x-3">
+
+       <div class="flex flex-row justify-center col-span-2 space-x-3">
          <Button
           severity="info"
           type="submit"
@@ -295,9 +303,10 @@ const showUpdateModal=(item)=>{
           :disabled="form.processing"
 
         />
-      </div>
-
         <Button label="Cancel" severity="warning" icon="pi pi-cancel" @click="showModal=false"/>
+</div>
+
+
 </div>
 
     </form>

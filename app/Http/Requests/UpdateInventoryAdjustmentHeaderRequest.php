@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateLocationRequest extends FormRequest
+class UpdateInventoryAdjustmentHeaderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,9 +21,8 @@ class UpdateLocationRequest extends FormRequest
      */
     public function rules(): array
     {
-         return [
-            // 'code'=>'required|unique:locations,code,except,id',
-            // 'description'=>'required|unique:locations,description,except,id',
-           ];
+        return [
+            //
+        ];
     }
 }

@@ -24,9 +24,6 @@ class NoSeriesController extends Controller
             $searchParameter = $request->has('search')?$request->search:'';
             $searchColumns = ['code'];
 
-
-
-
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], []);
 
             $series = NoSeriesResource::collection($searchService
@@ -48,10 +45,10 @@ class NoSeriesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreNoSeriesRequest $request)
     {
         NoSeries::create($request->all());
-            return redirect(route('series.index'));
+        return redirect(route('series.index'));
     }
 
     /**
@@ -73,7 +70,7 @@ class NoSeriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateNoSeriesRequest $request, string $id)
     {
         // dd($id);
           NoSeries::firstWhere('id',$id)?->update($request->all());

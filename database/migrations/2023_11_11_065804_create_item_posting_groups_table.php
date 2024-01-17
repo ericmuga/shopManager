@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\NoSeries;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,9 +15,10 @@ return new class extends Migration
         Schema::create('item_posting_groups', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
-            $table->string('no_series_code');
+            $table->foreignIdFor(NoSeries::class);
             $table->string('description');
-            $table->timestamps();
+             $table->boolean('blocked')->default(false);
+             $table->timestamps();
         });
     }
 

@@ -101,6 +101,8 @@ const toggleSubMenu = (menuKey) => {
         </div>
         <div v-show="subMenuOpen['inventory']">
             <div class="py-2 pl-8 text-black" ><Link :href="route('items.index')" :active="route().current('items.index')">Items </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('locations.index')" :active="route().current('locations.index')">Locations </Link></div>
+            <div class="py-2 pl-8 text-black" ><Link :href="route('inventoryAdjustments.index')" :active="route().current('inventoryAdjustments.index')">Inventory Adjustments </Link></div>
             <div class="py-2 pl-8 text-black" ><Link :href="route('itemPostingGroups.index')" :active="route().current('customers.index')">Setups </Link></div>
         </div>
 

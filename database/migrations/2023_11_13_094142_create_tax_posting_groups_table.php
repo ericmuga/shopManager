@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('description');
             $table->string('type'); // customer, vendor, items
-            $table->timestamps();
+            $table->boolean('blocked')->default(false);
+             $table->timestamps();
         });
     }
 

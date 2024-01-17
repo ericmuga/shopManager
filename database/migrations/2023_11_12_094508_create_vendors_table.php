@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\BusPostingGroup;
+use App\Models\TaxPostingGroup;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,6 +22,11 @@ return new class extends Migration
             $table->string('phone_number');
             $table->string('address')->nullable();
             $table->string('physical_address')->nullable();
+            $table->boolean('blocked')->default(false)->nullable();
+            $table->foreignIdFor(TaxPostingGroup::class);
+            $table->foreignIdFor(BusPostingGroup::class);
+
+
             $table->timestamps();
         });
     }

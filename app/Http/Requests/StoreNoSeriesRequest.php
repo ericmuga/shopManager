@@ -12,7 +12,8 @@ class StoreNoSeriesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-          return auth()->user()->hasRole('admin');
+        // return auth()->user()->can('create no_series');
+        return true;
     }
 
     /**

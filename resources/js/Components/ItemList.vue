@@ -1,7 +1,7 @@
 <template>
   <div >
     <!-- Search input -->
-    <div v-if="loading">Loading...</div>
+    <div v-if="inventoryStore.isLoading">Loading...</div>
     <div v-else>
 
 
@@ -46,36 +46,19 @@
 import { ref, defineProps, defineEmits,watch,onMounted } from 'vue';
 import { debounce } from 'lodash';
 import { HeartIcon } from '@heroicons/vue/16/solid';
+import { useInventoryStore } from '@/Stores/useInventoryStore';
 
-// Props
-const props = defineProps(['items']);
-const filteredItems= ref(null);
-
-
-// State
-const searchTerm = ref('');
-
+const inventoryStore = useInventoryStore();
 const loading = ref(true);
-const data = ref(null);
+onMounted(() => {
 
-onMounted(async () => {
-  try {
-    const response = await axios.get(route('items.list'));
-    // console.log(response.data.items);
-    filteredItems.value=response.data.items
-    // console.log(filteredItems.value)
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    // Handle errors if needed
-  } finally {
-    loading.value = false;
-  }
+   inventoryStore.fetchItems();
 });
+const itemOptions = computed(() => inventoryStore.items);
 
-// Emitting events
+const filteredItems= ref(itemOptions);
+const searchTerm = ref('');
 const emit = defineEmits();
-
-// Method to add item to cart and emit an event
 const addToCart = (item) => {
   item.selected = !item.selected; // Toggle selected state
 

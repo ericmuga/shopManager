@@ -11,7 +11,7 @@ class UpdateNoSeriesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class UpdateNoSeriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'series_code'=>'required',
+            'type'=>'required',
+            'characters'=>'required',
+            'last_no_used'=>'required',
+            'last_date_used'=>'required',
         ];
     }
 }

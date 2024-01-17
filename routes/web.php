@@ -16,38 +16,31 @@ use App\Http\Controllers\{BusPostingGroupController, CustomerController,
                             TaxPostingGroupController,
                             TaxPostingSetupController,
                             UserController,
+                            LocationController,
                         };
 
 
-use Illuminate\Foundation\Application;
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ItemController;
 use App\Models\Customer;
 use Glhd\Gretel\View\Breadcrumbs;
 use App\Http\Controllers\SalesController;
+
 use App\Models\Item;
-use Spatie\Permission\Contracts\Role;
+use App\Models\Location;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
+
+require __DIR__.'/inventoryAdjustments.php';
+require __DIR__.'/globalCache.php';
+//items
+
+
+
+
+//////////////////end of inventory store routes////////////////
 
 
 Route::get('/dashboard', function () {
@@ -89,6 +82,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('taxPostingSetups',TaxPostingSetupController::class);
 
 
+     Route::resource('locations', LocationController::class)->breadcrumbs([
+                                                                            'index' => 'Locations',
+                                                                            'create' => 'New Location',
+                                                                            'show' => fn(Location $location) => $location->code,
+                                                                            'edit' => 'Edit',
+                                                                        ]);
+
+
     Route::resource('items', ItemController::class)->breadcrumbs([
                                                                             'index' => 'Items',
                                                                             'create' => 'New Item',
@@ -110,21 +111,12 @@ Route::middleware('auth')->group(function () {
 
     // routes/web.php
 
-
-
-Route::get('/sales-summary', [SalesController::class, 'index'])->name('sales.summary')->breadcrumb('Sales Summary');
-
-
-    // Route::resource('orders',OrderController::class);
-    // Route::resource('orderLines',OrderLineController::class);
-
-
-    ///////////////////////////Sales Routes//////////////////////////////////
+    Route::get('/sales-summary', [SalesController::class, 'index'])->name('sales.summary')->breadcrumb('Sales Summary');
     Route::get('sales',fn()=>inertia('Sales/Dashboard'))->name('sales.dashboard')->breadcrumb('sales');
-
     Route::resource('salesOrder', SalesOrderController::class);
     Route::get('get-logo',[SalesOrderController::class, 'convertImageToDataURL'])->name('convertLogo');
     Route::resource('purchaseOrder',PurchaseOrderController::class);
+
 
 
 

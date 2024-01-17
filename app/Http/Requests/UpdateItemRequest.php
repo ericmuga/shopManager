@@ -11,7 +11,7 @@ class UpdateItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,17 @@ class UpdateItemRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+        return  [
+            'type'=>'required',
+            'code'=>['required','unique:items,code'],
+            'description'=>['required','unique:items,description'],
+            'sales_uom'=>'required',
+            'base_uom'=>'required',
+            'unit_price'=>'required',
+            'unit_cost'=>'required',
+            'item_posting_group_id'=>'required',
+            'tax_group_id'=>'required',
+
         ];
     }
 }

@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BusPostingGroup extends Model
+class InventoryAdjustmentHeader extends Model
 {
     use HasFactory;
 
     protected $guarded=['id'];
 
-    public function no_series()
+    public function lines()
     {
-        return $this->belongsTo(NoSeries::class);
+        return $this->hasMany(InventoryAdjustmentLine::class);
     }
-
 }

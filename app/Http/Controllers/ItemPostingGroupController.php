@@ -32,7 +32,7 @@ class ItemPostingGroupController extends Controller
 
             $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, [], []);
 
-            $no_series= NoSeries::select('series_code')->where('type','item')->get();
+            $no_series= NoSeries::select('series_code','id')->where('type','item')->get();
 
             $posting_groups = ItemPostingGroupResource::collection($searchService
                             //   ->with(['confirmations']) // Example of eager loading related models

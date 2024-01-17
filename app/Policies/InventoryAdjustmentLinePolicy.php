@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\InventoryAdjustment;
+use App\Models\InventoryAdjustmentLine;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class InventoryAdjustmentPolicy
+class InventoryAdjustmentLinePolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class InventoryAdjustmentPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, InventoryAdjustment $inventoryAdjustment): bool
+    public function view(User $user, InventoryAdjustmentLine $inventoryAdjustmentLine): bool
     {
         //
     }
@@ -35,7 +35,7 @@ class InventoryAdjustmentPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, InventoryAdjustment $inventoryAdjustment): bool
+    public function update(User $user, InventoryAdjustmentLine $inventoryAdjustmentLine): bool
     {
         //
     }
@@ -43,7 +43,7 @@ class InventoryAdjustmentPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, InventoryAdjustment $inventoryAdjustment): bool
+    public function delete(User $user, InventoryAdjustmentLine $inventoryAdjustmentLine): bool
     {
         //
     }
@@ -51,7 +51,7 @@ class InventoryAdjustmentPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, InventoryAdjustment $inventoryAdjustment): bool
+    public function restore(User $user, InventoryAdjustmentLine $inventoryAdjustmentLine): bool
     {
         //
     }
@@ -59,7 +59,7 @@ class InventoryAdjustmentPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, InventoryAdjustment $inventoryAdjustment): bool
+    public function forceDelete(User $user, InventoryAdjustmentLine $inventoryAdjustmentLine): bool
     {
         //
     }

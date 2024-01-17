@@ -2,29 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\InventoryAdjustmentResource;
+use App\Models\InventoryAdjustmentHeader;
 use Illuminate\Http\Request;
-
+use App\Services\SearchQueryService;
 class InventoryAdjustmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+            $queryBuilder=InventoryAdjustmentHeader::latest();
+            $searchParameter = $request->has('search')?$request->search:'';
+            $searchColumns = ['document_no','ext_document_no'];
+            $strictColumns = [];
+            $relatedModels = [];
+            $searchService = new SearchQueryService($queryBuilder, $searchParameter, $searchColumns, $strictColumns, $relatedModels);
+            $inventoryAdjustments=InventoryAdjustmentResource::collection($searchService->search()->paginate(5));
+            return inertia('InventoryAdjustments/List',compact('inventoryAdjustments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //

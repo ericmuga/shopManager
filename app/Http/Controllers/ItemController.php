@@ -1,16 +1,29 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\UpdateItemRequest;
 use Illuminate\Http\Request;
 use App\Models\{Item, ItemPostingGroup, TaxPostingGroup};
 use App\Http\Resources\{ItemPostingGroupResource, ItemResource, TaxPostingGroupResource};
 use App\Services\SearchQueryService;
-
+  use Illuminate\Support\Facades\Cache;
 class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     *
+     *
      */
+
+
+
+
+
+
+
+
     public function index(Request $request)
     {
         $queryBuilder = Item::query();
@@ -42,78 +55,37 @@ class ItemController extends Controller
              return inertia('Item/List',compact('items','posting_groups','tax_groups'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
 
-    private function validateRequest(Request $request)
-    {
-         $request->validate([
-            'type'=>'required',
-            'code'=>['required','unique:items,code'],
-            'description'=>['required','unique:items,description'],
-            'sales_uom'=>'required',
-            'base_uom'=>'required',
-            'unit_price'=>'required',
-            'unit_cost'=>'required',
-            'item_posting_group_id'=>'required',
-            'tax_group_id'=>'required',
-
-         ]);
-    }
 
 
     public function list()
     {
-                $items=ItemResource::collection(Item::whereNot('blocked')->get());
-            return response()->json(compact('items'));
+        $items=ItemResource::collection(Item::whereNot('blocked')->get());
+         return response()->json(compact('items'));
     }
 
 
-    public function store(Request $request)
+    public function store(StoreItemRequest $request)
     {
         $this->validateRequest($request);
         Item::create($request->all());
-            return redirect(route('items.index'));
+        Cache::forget('items');
+       return redirect(route('items.index'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(UpdateItemRequest $request, string $id)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-           $this->validateRequest($request);
        Item::firstWhere('id',$request->id)?->update($request->all());
+       Cache::forget('items');
         return redirect (route('items.index'));
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         Item::firstWhere('id',$id)?->delete();
+        Cache::forget('items');
         return redirect(route('items.index'));
     }
+
 }

@@ -7,5 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Location extends Model
 {
-    use HasFactory;
+     use HasFactory;
+
+     protected $guarded=['id'];
+
+     public function item_entries()
+     {
+        return $this->hasMany(ItemEntry::class);
+     }
+
+     public function setCodeAttribute($value)
+    {
+        $this->attributes['code'] = strtoupper($value);
+    }
 }

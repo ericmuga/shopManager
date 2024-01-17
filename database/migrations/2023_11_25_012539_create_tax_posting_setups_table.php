@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('item_tax_group_id');
             $table->string('bus_tax_group_id');
             $table->string('tax_identifier')->unique();
-            // $table->unique(['item_posting_group_id','bus_posting_group_id'])->index();
+            $table->float('tax_rate',2,2);
             $table->timestamps();
         });
     }
